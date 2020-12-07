@@ -31,8 +31,9 @@
       return defs;
     },
     _convert: function(rules, scope, defs){
-      var i$, len$, rule, sel, results$ = [];
+      var ret, i$, len$, rule, sel, code;
       defs == null && (defs = {});
+      ret = "";
       for (i$ = 0, len$ = rules.length; i$ < len$; ++i$) {
         rule = rules[i$];
         if (rule.style && defs[rule.style.animationName]) {
@@ -40,15 +41,18 @@
         }
         if (rule.selectorText) {
           sel = rule.selectorText.split(',').map(fn$).map(fn1$).join(',');
-          results$.push(rule.selectorText = sel);
+          ret += "" + sel + " {\n  " + Array.from(rule.style).map(fn2$).join(';') + "\n}";
+          rule.selectorText = sel;
         } else if (rule.name) {
-          sel = rule.name.split(',').map(fn2$).map(fn3$).join(',');
-          results$.push(rule.name = sel);
+          sel = rule.name.split(',').map(fn3$).map(fn4$).join(',');
+          rule.name = sel;
+          ret += "@keyframes " + sel + " {\n  " + Array.from(rule.cssRules).map(fn5$).join('\n') + "\n}";
         } else if (rule.cssRules) {
-          results$.push(this._convert(rule.cssRules, scope, defs));
+          code = this._convert(rule.cssRules, scope, defs);
+          ret += "@media " + rule.conditionText + " {\n  " + code + "\n}";
         }
       }
-      return results$;
+      return ret;
       function fn$(it){
         return it.trim();
       }
@@ -56,14 +60,20 @@
         return scope + " " + it;
       }
       function fn2$(it){
-        return it.trim();
+        return it + ":" + rule.style[it];
       }
       function fn3$(it){
+        return it.trim();
+      }
+      function fn4$(it){
         return scope + "__" + it;
+      }
+      function fn5$(it){
+        return it.cssText;
       }
     },
     convert: function(a, b){
-      var opt, ref$, css, scope, ret, defs, i$, len$, rule;
+      var opt, ref$, css, scope, ret, defs;
       ref$ = opt = typeof a === 'object'
         ? a
         : {
@@ -73,11 +83,7 @@
       this.node.textContent = css;
       ret = "";
       defs = this.getNames(this.node.sheet.rules, {});
-      this._convert(this.node.sheet.rules, scope, defs);
-      for (i$ = 0, len$ = (ref$ = this.node.sheet.rules).length; i$ < len$; ++i$) {
-        rule = ref$[i$];
-        ret += rule.cssText;
-      }
+      ret = this._convert(this.node.sheet.rules, scope, defs);
       return ret;
     }
   });
