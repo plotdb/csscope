@@ -3,7 +3,7 @@
   "name": "@plotdb/csscope",
   "license": "MIT",
   "description": "add scope to any css code",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "files": [
     "dist/**/*"
   ],
