@@ -17,8 +17,53 @@
     return this;
   };
   csscope.converter.prototype = import$(Object.create(Object.prototype), {
+    getNames: function(rules, defs){
+      var i$, len$, rule;
+      defs == null && (defs = {});
+      for (i$ = 0, len$ = rules.length; i$ < len$; ++i$) {
+        rule = rules[i$];
+        if (rule.name) {
+          defs[rule.name] = true;
+        } else if (rule.cssRules) {
+          this.getNames(rule.cssRules, defs);
+        }
+      }
+      return defs;
+    },
+    _convert: function(rules, scope, defs){
+      var i$, len$, rule, sel, results$ = [];
+      defs == null && (defs = {});
+      for (i$ = 0, len$ = rules.length; i$ < len$; ++i$) {
+        rule = rules[i$];
+        if (rule.style && defs[rule.style.animationName]) {
+          rule.style.animationName = scope + "__" + rule.style.animationName;
+        }
+        if (rule.selectorText) {
+          sel = rule.selectorText.split(',').map(fn$).map(fn1$).join(',');
+          results$.push(rule.selectorText = sel);
+        } else if (rule.name) {
+          sel = rule.name.split(',').map(fn2$).map(fn3$).join(',');
+          results$.push(rule.name = sel);
+        } else if (rule.cssRules) {
+          results$.push(this._convert(rule.cssRules, scope, defs));
+        }
+      }
+      return results$;
+      function fn$(it){
+        return it.trim();
+      }
+      function fn1$(it){
+        return scope + " " + it;
+      }
+      function fn2$(it){
+        return it.trim();
+      }
+      function fn3$(it){
+        return scope + "__" + it;
+      }
+    },
     convert: function(a, b){
-      var opt, ref$, css, scope, ret, i$, len$, rule, sel;
+      var opt, ref$, css, scope, ret, defs, i$, len$, rule;
       ref$ = opt = typeof a === 'object'
         ? a
         : {
@@ -27,19 +72,13 @@
         }, css = ref$.css, scope = ref$.scope;
       this.node.textContent = css;
       ret = "";
+      defs = this.getNames(this.node.sheet.rules, {});
+      this._convert(this.node.sheet.rules, scope, defs);
       for (i$ = 0, len$ = (ref$ = this.node.sheet.rules).length; i$ < len$; ++i$) {
         rule = ref$[i$];
-        sel = rule.selectorText.split(',').map(fn$).map(fn1$).join(',');
-        rule.selectorText = sel;
         ret += rule.cssText;
       }
       return ret;
-      function fn$(it){
-        return it.trim();
-      }
-      function fn1$(it){
-        return scope + " " + it;
-      }
     }
   });
   if (typeof module != 'undefined' && module !== null) {
