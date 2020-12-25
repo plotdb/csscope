@@ -3,7 +3,7 @@
   "name": "@plotdb/csscope",
   "license": "MIT",
   "description": "add scope to any css code",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "files": [
     "dist/**/*"
   ],
@@ -17,7 +17,7 @@
     "npm": ">=6.4.1"
   },
   "scripts": {
-    "start": "npx lsc server",
+    "start": "npx server -r web -o true",
     "test": "npx mocha --require livescript ./test/index.ls",
     "coverage": "npx nyc --reporter=text npm run test"
   },
@@ -27,14 +27,13 @@
     "bootstrap": "^4.5.2",
     "bootstrap.ldui": "github:loadingio/bootstrap.ldui",
     "bootstrap.native": "^3.0.13",
-    "fedep": "0.0.7",
-    "jsdom": "^16.4.0",
+    "fedep": "0.0.11",
     "ldcover": "^1.1.0",
     "ldview": "0.0.2",
     "livescript": ">=1.6.0",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
-    "template": "github:zbryikt/template#v2.1.6",
+    "template": "github:zbryikt/template#v2.1.7",
     "uglify-js": "=3.2.0"
   },
   "nyc": {
