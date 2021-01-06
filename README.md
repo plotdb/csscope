@@ -31,7 +31,16 @@ For example, following DOM ( in Pug ) use `[ld-scope]` to separate each scope:
 when we specify `scopeTest` option, we can ensure that the style for `h2` element in the parent won't affect `h2` element in its child.
 
 `scopeTest` is by default `undefined` (or by default the value specified in option when calling `csscope.converter` constructor), in this case there is no scope boundary so all parent rules penetrate into their children.
- 
+
+
+## Scope Root
+
+To style element of scope root, simply use `:scope` pseudo class:
+
+    :scope { background: #000; color: #fff}
+
+csscope will replace `:scope` with the corresponding scope selector.
+
 
 ## Todo
 

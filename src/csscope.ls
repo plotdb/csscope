@@ -20,7 +20,7 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
       else if rule.cssRules => @get-names(rule.cssRules, defs)
     return defs
   # scope: css selector rule from user
-  # scope-test: rule for identifying if some node is be scoped ( as the root element of a scope )
+  # scope-test: rule for identifying if some node is scoped ( as the root element of a scope )
   _convert: (rules, scope, scope-test, defs = {}) ->
     ret = ""
     for rule in rules =>
@@ -31,11 +31,15 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
       if rule.selectorText =>
         if !scope-test =>
           # vue favor ( affect child even if scoped)
-          sel = rule.selectorText.split(',').map(->it.trim!).map(-> "#scope #it").join(',')
+          sel = rule
+            .selectorText.split(',').map(->it.trim!)
+            .map(-> if it == ":scope" => scope else "#scope #it")
+            .join(',')
         else
           # css module favor ( only in scope )
           sel = rule.selectorText.split(',').map(->it.trim!)
             .map ->
+              if it == ":scope" => return scope
               [h,...t] = it.split(' ').map(->it.trim!).filter(->it)
               "#scope :not(#scope-test) #it," +
               "#scope > #h:not(#scope-test) #{t.join(' ')}"

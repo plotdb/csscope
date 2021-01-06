@@ -1,3 +1,9 @@
+# 0.2.0
+
+ - fix typo in comment
+ - add `:scope` handling to support styling of element in scope root.
+
+
 # 0.1.0
 
  - bug fix: scoped css should not affect child scope, unless enabled explicitly.

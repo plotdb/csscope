@@ -63,13 +63,20 @@
         return it.trim();
       }
       function fn1$(it){
-        return scope + " " + it;
+        if (it === ":scope") {
+          return scope;
+        } else {
+          return scope + " " + it;
+        }
       }
       function fn2$(it){
         return it.trim();
       }
       function fn3$(it){
         var ref$, h, t;
+        if (it === ":scope") {
+          return scope;
+        }
         ref$ = it.split(' ').map(function(it){
           return it.trim();
         }).filter(function(it){
