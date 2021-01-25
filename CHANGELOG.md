@@ -1,3 +1,8 @@
+# 0.2.1
+
+ - fix bug: selector with pseudo class not work due to `:not` appended.
+
+
 # 0.2.0
 
  - fix typo in comment

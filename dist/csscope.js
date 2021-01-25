@@ -82,7 +82,7 @@
         }).filter(function(it){
           return it;
         }), h = ref$[0], t = slice$.call(ref$, 1);
-        return (scope + " :not(" + scopeTest + ") " + it + ",") + (scope + " > " + h + ":not(" + scopeTest + ") " + t.join(' '));
+        return (scope + " :not(" + scopeTest + ") " + it + ",") + (scope + " > :not(" + scopeTest + ")" + h + " " + t.join(' '));
       }
       function fn4$(it){
         return it + ":" + rule.style[it];

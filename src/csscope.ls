@@ -42,7 +42,7 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
               if it == ":scope" => return scope
               [h,...t] = it.split(' ').map(->it.trim!).filter(->it)
               "#scope :not(#scope-test) #it," +
-              "#scope > #h:not(#scope-test) #{t.join(' ')}"
+              "#scope > :not(#scope-test)#h #{t.join(' ')}"
             .join(',')
 
         ret += """
