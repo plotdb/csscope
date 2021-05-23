@@ -80,5 +80,44 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
     ret = @_convert(@node.sheet.rules, scope, scope-test, defs)
     return ret
 
+csscope.manager = ->
+  @attr-name = "csscope"
+  @converter = new csscope.converter!
+  @counter = 0
+  @init!
+  @
+
+csscope.manager.prototype = Object.create(Object.prototype) <<< do
+  init: ->
+    if @inited => return
+    @inited = true
+    @style-node = document.createElement \style
+    @style-node.setAttribute \type, \text/css
+    @style-node.setAttribute \data-name, "csscope.manager"
+    @style-content = []
+    document.body.appendChild @style-node
+
+  scope: (node, url) ->
+    ret = @get url
+    node.classList.add.apply node.classList, ret
+
+  get: (url) ->
+    url = if Array.isArray(url) => url else [url]
+    url.map(~>@scope[it]).filter(->it)
+
+  load: (urls, scope-test) ->
+    urls = if Array.isArray(urls) => urls else [urls]
+    Promise
+      .all(
+        urls.map (url) ~>
+          @scope[url] = "csp-#{@counter++}-#{Math.random!toString(36)substring(2)substring(5)}"
+          ld$.fetch url, {method: "GET"}, {type: \text}
+            .then (css) ~>
+              ret = @converter.convert {css, scope: ".#{@scope[url]}", scope-test}
+              @style-content.push ret
+      )
+      .then ~> @style-node.textContent = @style-content.join(\\n)
+      .then ~> @get urls
+
 if module? => module.exports = csscope
 if window? => window.csscope = csscope

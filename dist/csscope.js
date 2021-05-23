@@ -116,6 +116,68 @@
       return ret;
     }
   });
+  csscope.manager = function(){
+    this.attrName = "csscope";
+    this.converter = new csscope.converter();
+    this.counter = 0;
+    this.init();
+    return this;
+  };
+  csscope.manager.prototype = import$(Object.create(Object.prototype), {
+    init: function(){
+      if (this.inited) {
+        return;
+      }
+      this.inited = true;
+      this.styleNode = document.createElement('style');
+      this.styleNode.setAttribute('type', 'text/css');
+      this.styleNode.setAttribute('data-name', "csscope.manager");
+      this.styleContent = [];
+      return document.body.appendChild(this.styleNode);
+    },
+    scope: function(node, url){
+      var ret;
+      ret = this.get(url);
+      return node.classList.add.apply(node.classList, ret);
+    },
+    get: function(url){
+      var this$ = this;
+      url = Array.isArray(url)
+        ? url
+        : [url];
+      return url.map(function(it){
+        return this$.scope[it];
+      }).filter(function(it){
+        return it;
+      });
+    },
+    load: function(urls, scopeTest){
+      var this$ = this;
+      urls = Array.isArray(urls)
+        ? urls
+        : [urls];
+      return Promise.all(urls.map(function(url){
+        this$.scope[url] = "csp-" + (this$.counter++) + "-" + Math.random().toString(36).substring(2).substring(5);
+        return ld$.fetch(url, {
+          method: "GET"
+        }, {
+          type: 'text'
+        }).then(function(css){
+          var ret;
+          ret = this$.converter.convert({
+            css: css,
+            scope: "." + this$.scope[url],
+            scopeTest: scopeTest
+          });
+          return this$.styleContent.push(ret);
+        });
+      })).then(function(){
+        return this$.styleNode.textContent = this$.styleContent.join('\n');
+      }).then(function(){
+        return this$.get(urls);
+      });
+    }
+  });
   if (typeof module != 'undefined' && module !== null) {
     module.exports = csscope;
   }
