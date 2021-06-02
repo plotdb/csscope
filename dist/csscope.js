@@ -141,7 +141,9 @@
     scope: function(node, url){
       var ret;
       ret = this.get(url);
-      return node.classList.add.apply(node.classList, ret);
+      return node.classList.add.apply(node.classList, ret.map(function(it){
+        return it.scope;
+      }));
     },
     get: function(url){
       var this$ = this;
@@ -149,9 +151,12 @@
         ? url
         : [url];
       return url.map(function(it){
-        return this$.scope[it];
+        return {
+          url: it,
+          scope: this$.scope[it]
+        };
       }).filter(function(it){
-        return it;
+        return it.scope;
       });
     },
     load: function(urls, scopeTest){

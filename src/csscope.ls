@@ -100,11 +100,11 @@ csscope.manager.prototype = Object.create(Object.prototype) <<< do
 
   scope: (node, url) ->
     ret = @get url
-    node.classList.add.apply node.classList, ret
+    node.classList.add.apply node.classList, ret.map(-> it.scope)
 
   get: (url) ->
     url = if Array.isArray(url) => url else [url]
-    url.map(~>@scope[it]).filter(->it)
+    url.map(~>{url: it, scope: @scope[it]}).filter(->it.scope)
 
   load: (urls, scope-test) ->
     urls = if Array.isArray(urls) => urls else [urls]
