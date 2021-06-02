@@ -41,8 +41,9 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
             .map ->
               if it == ":scope" => return scope
               [h,...t] = it.split(' ').map(->it.trim!).filter(->it)
+              [h1,h2] = if /^[a-zA-Z]/.exec(h) => [h,''] else ['',h]
               "#scope :not(#scope-test) #it," +
-              "#scope > :not(#scope-test)#h #{t.join(' ')}"
+              "#scope > #h1:not(#scope-test)#h2 #{t.join(' ')}"
             .join(',')
 
         ret += """

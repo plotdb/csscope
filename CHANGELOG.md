@@ -1,3 +1,8 @@
+# v0.3.1
+
+ - fix bug: scoping doesn't work with css rules starting with a tag name.
+
+
 # v0.3.0
 
  - upgrade modules
