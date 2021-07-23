@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.4.1
+
+ - fix bug: `!important` is gone after csscoping. add this by checking `getPropertyPriority`.
+
+
 ## v0.4.0
 
  - change api: `load` and `get` now returns url + scope class object ( { url, scope } )

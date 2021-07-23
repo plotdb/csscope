@@ -88,7 +88,7 @@
         return (scope + " :not(" + scopeTest + ") " + it + ",") + (scope + " > " + h1 + ":not(" + scopeTest + ")" + h2 + " " + t.join(' '));
       }
       function fn4$(it){
-        return it + ":" + rule.style[it];
+        return it + ":" + rule.style[it] + (rule.style.getPropertyPriority(it) === 'important' ? '!important' : '');
       }
       function fn5$(it){
         return it.trim();

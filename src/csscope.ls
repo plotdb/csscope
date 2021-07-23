@@ -48,7 +48,7 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
 
         ret += """
         #sel {
-          #{Array.from(rule.style).map(-> "#it:#{rule.style[it]}").join(';')}
+          #{Array.from(rule.style).map(-> "#it:#{rule.style[it]}#{if rule.style.getPropertyPriority(it) == 'important' => '!important' else ''}").join(';')}
         }
         """
         rule.selectorText = sel
