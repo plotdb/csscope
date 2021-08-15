@@ -1,5 +1,11 @@
 # Change Logs
 
+## v0.5.0
+
+ - support module style( `{name,version,path}` ) style url
+ - support customizing `registry` for module style url
+
+
 ## v0.4.1
 
  - fix bug: `!important` is gone after csscoping. add this by checking `getPropertyPriority`.

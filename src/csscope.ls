@@ -81,14 +81,22 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
     ret = @_convert(@node.sheet.rules, scope, scope-test, defs)
     return ret
 
-csscope.manager = ->
+csscope.manager = (opt = {}) ->
   @attr-name = "csscope"
   @converter = new csscope.converter!
   @counter = 0
+  if opt.registry => @set-registry opt.registry
   @init!
   @
 
 csscope.manager.prototype = Object.create(Object.prototype) <<< do
+  _registry: ({name, version, path}) -> "/lib/#name/#{version or 'latest'}/#{path or ''}"
+  set-registry: -> @_registry = it
+  get-url: ->
+    return if it.url? => it.url
+    else if it.name? => @_registry it{name, version, path}
+    else it
+
   init: ->
     if @inited => return
     @inited = true
@@ -98,16 +106,19 @@ csscope.manager.prototype = Object.create(Object.prototype) <<< do
     @style-content = []
     document.body.appendChild @style-node
 
-  scope: (node, url) ->
-    ret = @get url
+  scope: (node, urls = []) ->
+    ret = @get urls
     node.classList.add.apply node.classList, ret.map(-> it.scope)
+    return ret
 
-  get: (url) ->
-    url = if Array.isArray(url) => url else [url]
-    url.map(~>{url: it, scope: @scope[it]}).filter(->it.scope)
+  get: (urls = []) ->
+    (if Array.isArray(urls) => urls else [urls])
+      .map ~> @get-url it
+      .map ~> {url: it, scope: @scope[it]}
+      .filter -> it.scope
 
   load: (urls, scope-test) ->
-    urls = if Array.isArray(urls) => urls else [urls]
+    urls = (if Array.isArray(urls) => urls else [urls]).map ~> @get-url it
     Promise
       .all(
         urls.map (url) ~>

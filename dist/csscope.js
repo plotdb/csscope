@@ -119,14 +119,35 @@
       return ret;
     }
   });
-  csscope.manager = function(){
+  csscope.manager = function(opt){
+    opt == null && (opt = {});
     this.attrName = "csscope";
     this.converter = new csscope.converter();
     this.counter = 0;
+    if (opt.registry) {
+      this.setRegistry(opt.registry);
+    }
     this.init();
     return this;
   };
   csscope.manager.prototype = import$(Object.create(Object.prototype), {
+    _registry: function(arg$){
+      var name, version, path;
+      name = arg$.name, version = arg$.version, path = arg$.path;
+      return "/lib/" + name + "/" + (version || 'latest') + "/" + (path || '');
+    },
+    setRegistry: function(it){
+      return this._registry = it;
+    },
+    getUrl: function(it){
+      return it.url != null
+        ? it.url
+        : it.name != null ? this._registry({
+          name: it.name,
+          version: it.version,
+          path: it.path
+        }) : it;
+    },
     init: function(){
       if (this.inited) {
         return;
@@ -138,19 +159,23 @@
       this.styleContent = [];
       return document.body.appendChild(this.styleNode);
     },
-    scope: function(node, url){
+    scope: function(node, urls){
       var ret;
-      ret = this.get(url);
-      return node.classList.add.apply(node.classList, ret.map(function(it){
+      urls == null && (urls = []);
+      ret = this.get(urls);
+      node.classList.add.apply(node.classList, ret.map(function(it){
         return it.scope;
       }));
+      return ret;
     },
-    get: function(url){
+    get: function(urls){
       var this$ = this;
-      url = Array.isArray(url)
-        ? url
-        : [url];
-      return url.map(function(it){
+      urls == null && (urls = []);
+      return (Array.isArray(urls)
+        ? urls
+        : [urls]).map(function(it){
+        return this$.getUrl(it);
+      }).map(function(it){
         return {
           url: it,
           scope: this$.scope[it]
@@ -161,9 +186,11 @@
     },
     load: function(urls, scopeTest){
       var this$ = this;
-      urls = Array.isArray(urls)
+      urls = (Array.isArray(urls)
         ? urls
-        : [urls];
+        : [urls]).map(function(it){
+        return this$.getUrl(it);
+      });
       return Promise.all(urls.map(function(url){
         this$.scope[url] = "csp-" + (this$.counter++) + "-" + Math.random().toString(36).substring(2).substring(5);
         return ld$.fetch(url, {
