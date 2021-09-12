@@ -125,28 +125,36 @@
     this.converter = new csscope.converter();
     this.counter = 0;
     if (opt.registry) {
-      this.setRegistry(opt.registry);
+      this.registry(opt.registry);
     }
     this.init();
     return this;
   };
   csscope.manager.prototype = import$(Object.create(Object.prototype), {
-    _registry: function(arg$){
+    _reg: function(arg$){
       var name, version, path;
       name = arg$.name, version = arg$.version, path = arg$.path;
-      return "/lib/" + name + "/" + (version || 'latest') + "/" + (path || '');
+      return "/assets/lib/" + name + "/" + (version || 'latest') + "/" + (path || '');
     },
-    setRegistry: function(it){
-      return this._registry = it;
+    registry: function(it){
+      var ref$;
+      this._reg = it || '';
+      if (typeof this._reg === 'string') {
+        if (this._reg && (ref$ = this._reg)[ref$.length - 1] !== '/') {
+          return this._reg += '/';
+        }
+      }
     },
     getUrl: function(it){
       return it.url != null
         ? it.url
-        : it.name != null ? this._registry({
-          name: it.name,
-          version: it.version,
-          path: it.path
-        }) : it;
+        : it.name != null ? typeof this._reg === 'function'
+          ? this._reg({
+            name: it.name,
+            version: it.version,
+            path: it.path
+          })
+          : this._reg + "/" + name + "/" + (version || 'latest') + "/" + (path || '') : it;
     },
     init: function(){
       if (this.inited) {

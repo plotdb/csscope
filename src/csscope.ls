@@ -85,18 +85,21 @@ csscope.manager = (opt = {}) ->
   @attr-name = "csscope"
   @converter = new csscope.converter!
   @counter = 0
-  if opt.registry => @set-registry opt.registry
+  if opt.registry => @registry opt.registry
   @init!
   @
 
 csscope.manager.prototype = Object.create(Object.prototype) <<< do
-  _registry: ({name, version, path}) -> "/lib/#name/#{version or 'latest'}/#{path or ''}"
-  set-registry: -> @_registry = it
+  _reg: ({name, version, path}) -> "/assets/lib/#name/#{version or 'latest'}/#{path or ''}"
+  registry: ->
+    @_reg = it or ''
+    if typeof(@_reg) == \string => if @_reg and @_reg[* - 1] != \/ => @_reg += \/
   get-url: ->
     return if it.url? => it.url
-    else if it.name? => @_registry it{name, version, path}
+    else if it.name? =>
+      if typeof(@_reg) == \function => @_reg it{name, version, path}
+      else "#{@_reg}/#name/#{version or 'latest'}/#{path or ''}"
     else it
-
   init: ->
     if @inited => return
     @inited = true

@@ -1,5 +1,12 @@
 # Change Logs
 
+## v1.0.0
+
+ - rename `set-registry` to `registry`.
+ - align registry logic with `@plotdb/rescope` and `@plotdb/block`.
+ - change from `lib` to `assets/lib` for default registry root
+
+
 ## v0.5.0
 
  - support module style( `{name,version,path}` ) style url
