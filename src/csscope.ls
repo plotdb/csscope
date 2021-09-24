@@ -1,6 +1,6 @@
-csscope = (a,b) ->
+csscope = (a, b, c, d) ->
   if !csscope.default => csscope.default = new csscope.converter!
-  csscope.default.convert a, b
+  csscope.default.convert a, b, c, d
 
 csscope.converter = (opt={}) ->
   @scope-test = opt.scope-test
@@ -21,29 +21,29 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
     return defs
   # scope: css selector rule from user
   # scope-test: rule for identifying if some node is scoped ( as the root element of a scope )
-  _convert: (rules, scope, scope-test, defs = {}) ->
+  _convert: (rules, scope-rule, name, scope-test, defs = {}) ->
     ret = ""
     for rule in rules =>
       # rule with animationName defined
       if rule.style and defs[rule.style.animationName] =>
-        rule.style.animationName = "#{scope}__#{rule.style.animationName}"
+        rule.style.animationName = "#{name}__#{rule.style.animationName}"
       # general rule
       if rule.selectorText =>
         if !scope-test =>
           # vue favor ( affect child even if scoped)
           sel = rule
             .selectorText.split(',').map(->it.trim!)
-            .map(-> if it == ":scope" => scope else "#scope #it")
+            .map(-> if it == ":scope" => scope-rule else "#scope-rule #it")
             .join(',')
         else
           # css module favor ( only in scope )
           sel = rule.selectorText.split(',').map(->it.trim!)
             .map ->
-              if it == ":scope" => return scope
+              if it == ":scope" => return scope-rule
               [h,...t] = it.split(' ').map(->it.trim!).filter(->it)
               [h1,h2] = if /^[a-zA-Z]/.exec(h) => [h,''] else ['',h]
-              "#scope :not(#scope-test) #it," +
-              "#scope > #h1:not(#scope-test)#h2 #{t.join(' ')}"
+              "#scope-rule :not(#scope-test) #it," +
+              "#scope-rule > #h1:not(#scope-test)#h2 #{t.join(' ')}"
             .join(',')
 
         ret += """
@@ -54,7 +54,7 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
         rule.selectorText = sel
       # animation
       else if rule.name =>
-        sel = rule.name.split(',').map(->it.trim!).map(-> "#{scope}__#it").join(',')
+        sel = rule.name.split(',').map(->it.trim!).map(-> "#{name}__#it").join(',')
         rule.name = sel
         ret += """
         @keyframes #{sel} {
@@ -63,7 +63,7 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
         """
       # recursive definition
       else if rule.cssRules =>
-        code = @_convert(rule.cssRules, scope, scope-test, defs)
+        code = @_convert(rule.cssRules, scope-rule, name, scope-test, defs)
         ret += """
         @media #{rule.conditionText} {
           #{code}
@@ -72,13 +72,15 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
     return ret
 
 
-  convert: (a, b, c) ->
-    {css, scope, scope-test} = opt = if typeof(a) == \object => a else {css: b, scope: a, scope-test: c}
+  convert: (a, b, c, d) ->
+    {name, css, rule, scope-test} = opt = if typeof(a) == \object => a else {name: a, css: b, rule: c, scope-test: d}
+    if !rule => rule = ".#name"
+    if !name => name = rule
     if !scope-test => scope-test = @scope-test
     @node.textContent = css
     ret = ""
     defs = @get-names(@node.sheet.rules, {})
-    ret = @_convert(@node.sheet.rules, scope, scope-test, defs)
+    ret = @_convert(@node.sheet.rules, rule, name, scope-test, defs)
     return ret
 
 csscope.manager = (opt = {}) ->
@@ -128,7 +130,7 @@ csscope.manager.prototype = Object.create(Object.prototype) <<< do
           @scope[url] = "csp-#{@counter++}-#{Math.random!toString(36)substring(2)substring(5)}"
           ld$.fetch url, {method: "GET"}, {type: \text}
             .then (css) ~>
-              ret = @converter.convert {css, scope: ".#{@scope[url]}", scope-test}
+              ret = @converter.convert {css, name: @scope[url], scope-test}
               @style-content.push ret
       )
       .then ~> @style-node.textContent = @style-content.join(\\n)

@@ -5,15 +5,32 @@ add custom scope to any css. Use browser thus only works in browsers.
 
 ## Usage
 
-include `csscope.js`, then convert css via following:
+install via npm:
 
-    var scopedCSS = csscope("desired-scope-name", "your-css-code")
-    scopedCSS = csscope({css: "your-css-code", scope: "desired-scope-name", scopeText: "..."}) # option in object
+    npm install --save @plotdb/csscope
+
+
+then, include `csscope.js`, and convert css as follow:
+
+    scopedCSS = csscope("desired-scope-name", "your-css-code")
+
+or, with object as option:
+
+    scopedCSS = csscope({css: "your css code", name: "desired-scope-name", scopeTest: "..."})
 
 or, create a converter to convert:
 
-    scoper = new csscope.converter({ scopeTest: '... ' });
-    var scopedCSS = scoper.convert({ ... });
+    scope = new csscope.converter({ scopeTest: '...' });
+    var scopedCSS = scope.convert({ ... });
+
+
+options:
+
+ - name: scope name. should be a valid name for CSS class and CSS animation name.
+ - rule: optional. rule for matching the given scope name. by default `.your-scope-name`
+ - scopeTest: optional. selector for testing boundary of scope.
+ - css: css code to scope.
+
 
 ## Scope Testing
 

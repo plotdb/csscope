@@ -1,5 +1,10 @@
 # Change Logs
 
+## v2.0.0
+
+ - rename param `scope` to optional `rule` param, and and `name` as default param.
+
+
 ## v1.0.0
 
  - rename `set-registry` to `registry`.
