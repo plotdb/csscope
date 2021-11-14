@@ -22,19 +22,19 @@
     "coverage": "npx nyc --reporter=text npm run test"
   },
   "devDependencies": {
-    "@loadingio/debounce.js": "0.0.1",
-    "@loadingio/ldquery": "^2.0.0",
     "bootstrap": "^4.5.2",
-    "bootstrap.ldui": "github:loadingio/bootstrap.ldui",
     "bootstrap.native": "^3.0.13",
-    "fedep": "^0.0.12",
-    "ldcover": "^1.3.1",
-    "ldview": "^0.0.2",
+    "@loadingio/bootstrap.ext": "^0.0.3",
+    "@loadingio/debounce.js": "^0.0.1",
+    "@loadingio/ldquery": "^2.2.1",
+    "fedep": "^0.0.17",
+    "ldcover": "^2.1.0",
+    "ldview": "^0.2.7",
     "livescript": "^1.6.0",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
-    "template": "github:zbryikt/template#v2.3.11",
-    "uglify-js": "=3.2.0"
+    "@zbryikt/template": "^2.3.29",
+    "uglify-js": "^3.2.0"
   },
   "nyc": {
     "all": true,
@@ -50,8 +50,8 @@
     "root": "web/static/assets/lib",
     "modules": [
       "bootstrap",
-      "bootstrap.ldui",
       "bootstrap.native",
+      "@loadingio/bootstrap.ext",
       "@loadingio/ldquery",
       "@loadingio/debounce.js",
       "ldview",

@@ -6,6 +6,7 @@ csscope.converter = (opt={}) ->
   @scope-test = opt.scope-test
   @node = document.createElement("style")
   @iframe = document.createElement("iframe")
+  @iframe.setAttribute \title, "for csscope css parsing"
   @iframe.style <<< display: \none
   @iframe.src = \about:blank
   document.body.appendChild @iframe
@@ -137,4 +138,4 @@ csscope.manager.prototype = Object.create(Object.prototype) <<< do
       .then ~> @get urls
 
 if module? => module.exports = csscope
-if window? => window.csscope = csscope
+else if window? => window.csscope = csscope

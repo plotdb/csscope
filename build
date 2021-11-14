@@ -4,12 +4,16 @@ echo "prepare..."
 rm -rf dist
 mkdir -p dist
 
-echo "building csscope.ls -> csscope.js ..."
-npx lsc -cp src/csscope.ls > dist/csscope.js
-echo "minify csscope.js -> csscope.min.js ..."
-npx uglifyjs dist/csscope.js > dist/csscope.min.js
+echo "building index.ls -> index.js ..."
+./node_modules/.bin/lsc -cp src/index.ls > dist/index.js
+echo "minify index.js -> index.min.js ..."
+./node_modules/.bin/uglifyjs dist/index.js -m -c > dist/index.min.js
+
+echo "create deprecated csscope.js and csscope.min.js ..."
+cp dist/index.js dist/csscope.js
+cp dist/index.min.js dist/csscope.min.js
 
 echo "copy dist to web ..."
-rm -rf web/static/assets/lib/csscope/dev/
-mkdir -p web/static/assets/lib/csscope/dev/
-cp -R dist/* web/static/assets/lib/csscope/dev/
+rm -rf web/static/assets/lib/@plotdb/csscope/dev/
+mkdir -p web/static/assets/lib/@plotdb/csscope/dev/
+cp -R dist/* web/static/assets/lib/@plotdb/csscope/dev/

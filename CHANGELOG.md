@@ -1,5 +1,18 @@
 # Change Logs
 
+## v3.0.0 (upcoming)
+
+ - rename `csscope.js`, `csscope.min.js` to `index.js`, `index.min.js`
+
+
+## v2.0.1 (upcoming)
+
+ - set `title` for iframe for accessibility
+ - add `index.js`, `index.min.js` and deprecate `csscope.js`, `csscope.min.js`
+ - upgrade modules
+ - make building faster
+
+
 ## v2.0.0
 
  - rename param `scope` to optional `rule` param, and and `name` as default param.
