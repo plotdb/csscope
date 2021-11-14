@@ -1,0 +1,4 @@
+span::before {
+  display: block;
+  content: "by import";
+}

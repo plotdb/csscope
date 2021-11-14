@@ -1,0 +1,12 @@
+extends /base.pug
+block head
+  style(type="text/css"): :stylus
+    span { color: #f00 }
+    textarea { background: #f00 }
+    :root {
+      --color: #f00
+    }
+block body
+  div(ld="root")
+block script
+  script: include:lsc index.ls
