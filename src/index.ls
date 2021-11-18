@@ -2,6 +2,14 @@ csscope = (a, b, c, d) ->
   if !csscope.default => csscope.default = new csscope.converter!
   csscope.default.convert a, b, c, d
 
+csscope.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}/#{o.path}"
+csscope._cache = {}
+csscope.cache = (o) ->
+  if typeof(o) == \string => o = {url: o}
+  if !o.id => o.id = rsp.id o
+  if r = csscope._cache[o.id] => return r
+  return csscope._cache[o.id] = {} <<< o
+
 csscope.converter = (opt={}) ->
   @scope-test = opt.scope-test
   @node = document.createElement("style")
@@ -84,25 +92,34 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
     ret = @_convert(@node.sheet.rules, rule, name, scope-test, defs)
     return ret
 
-csscope.manager = (opt = {}) ->
+csscope.manager = (o = {}) ->
   @attr-name = "csscope"
+  @_cache = {}
   @converter = new csscope.converter!
   @counter = 0
-  if opt.registry => @registry opt.registry
+  @registry(o.registry or "/assets/lib/")
   @init!
   @
 
 csscope.manager.prototype = Object.create(Object.prototype) <<< do
-  _reg: ({name, version, path}) -> "/assets/lib/#name/#{version or 'latest'}/#{path or ''}"
-  registry: ->
-    @_reg = it or ''
-    if typeof(@_reg) == \string => if @_reg and @_reg[* - 1] != \/ => @_reg += \/
-  get-url: ->
-    return if it.url? => it.url
-    else if it.name? =>
-      if typeof(@_reg) == \function => @_reg it{name, version, path}
-      else "#{@_reg}/#name/#{version or 'latest'}/#{path or ''}"
-    else it
+  cache: (o) ->
+    if typeof(o) == \string => o = {url: o}
+    if !o.id => o.id = csscope.id o
+    if r = @_cache[o.id] => return r
+    if csscope._cache[o.id] => return @_cache[o.id] = that
+    return @_cache[o.id] = {} <<< o
+
+  _url: (o) ->
+    return if typeof(o) == \string => o
+    else if o.url => that
+    else @_reg o
+
+  registry: (v) ->
+    if typeof(v) == \string =>
+      if v[* - 1] == \/ => v = v.substring(0, v.length - 1)
+      @_reg = ((v) -> (o) -> "#{v}/#{o.name}/#{o.version or 'main'}/#{o.path or 'index.min.js'}") v
+    else @_reg = v
+
   init: ->
     if @inited => return
     @inited = true
@@ -119,18 +136,20 @@ csscope.manager.prototype = Object.create(Object.prototype) <<< do
 
   get: (urls = []) ->
     (if Array.isArray(urls) => urls else [urls])
-      .map ~> @get-url it
-      .map ~> {url: it, scope: @scope[it]}
+      .map ~> @_url it
+      .map ~> @cache it #{url: it, scope: @scope[it]}
       .filter -> it.scope
 
   load: (urls, scope-test) ->
-    urls = (if Array.isArray(urls) => urls else [urls]).map ~> @get-url it
+    urls = (if Array.isArray(urls) => urls else [urls]).map ~> @_url it
     Promise
       .all(
         urls.map (url) ~>
-          @scope[url] = "csp-#{@counter++}-#{Math.random!toString(36)substring(2)substring(5)}"
+          lib = @cache url
+          if lib.scope => return Promise.resolve!
           ld$.fetch url, {method: "GET"}, {type: \text}
             .then (css) ~>
+              @scope[url] = lib.scope = "csp-#{@counter++}-#{Math.random!toString(36)substring(2)substring(5)}"
               ret = @converter.convert {css, name: @scope[url], scope-test}
               @style-content.push ret
       )

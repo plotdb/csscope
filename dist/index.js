@@ -7,6 +7,25 @@
     }
     return csscope['default'].convert(a, b, c, d);
   };
+  csscope.id = function(o){
+    return o.id || o.url || o.name + "@" + o.version + "/" + o.path;
+  };
+  csscope._cache = {};
+  csscope.cache = function(o){
+    var r;
+    if (typeof o === 'string') {
+      o = {
+        url: o
+      };
+    }
+    if (!o.id) {
+      o.id = rsp.id(o);
+    }
+    if (r = csscope._cache[o.id]) {
+      return r;
+    }
+    return csscope._cache[o.id] = import$({}, o);
+  };
   csscope.converter = function(opt){
     opt == null && (opt = {});
     this.scopeTest = opt.scopeTest;
@@ -127,42 +146,56 @@
       return ret;
     }
   });
-  csscope.manager = function(opt){
-    opt == null && (opt = {});
+  csscope.manager = function(o){
+    o == null && (o = {});
     this.attrName = "csscope";
+    this._cache = {};
     this.converter = new csscope.converter();
     this.counter = 0;
-    if (opt.registry) {
-      this.registry(opt.registry);
-    }
+    this.registry(o.registry || "/assets/lib/");
     this.init();
     return this;
   };
   csscope.manager.prototype = import$(Object.create(Object.prototype), {
-    _reg: function(arg$){
-      var name, version, path;
-      name = arg$.name, version = arg$.version, path = arg$.path;
-      return "/assets/lib/" + name + "/" + (version || 'latest') + "/" + (path || '');
-    },
-    registry: function(it){
-      var ref$;
-      this._reg = it || '';
-      if (typeof this._reg === 'string') {
-        if (this._reg && (ref$ = this._reg)[ref$.length - 1] !== '/') {
-          return this._reg += '/';
-        }
+    cache: function(o){
+      var r, that;
+      if (typeof o === 'string') {
+        o = {
+          url: o
+        };
       }
+      if (!o.id) {
+        o.id = csscope.id(o);
+      }
+      if (r = this._cache[o.id]) {
+        return r;
+      }
+      if (that = csscope._cache[o.id]) {
+        return this._cache[o.id] = that;
+      }
+      return this._cache[o.id] = import$({}, o);
     },
-    getUrl: function(it){
-      return it.url != null
-        ? it.url
-        : it.name != null ? typeof this._reg === 'function'
-          ? this._reg({
-            name: it.name,
-            version: it.version,
-            path: it.path
-          })
-          : this._reg + "/" + name + "/" + (version || 'latest') + "/" + (path || '') : it;
+    _url: function(o){
+      var that;
+      return typeof o === 'string'
+        ? o
+        : (that = o.url)
+          ? that
+          : this._reg(o);
+    },
+    registry: function(v){
+      if (typeof v === 'string') {
+        if (v[v.length - 1] === '/') {
+          v = v.substring(0, v.length - 1);
+        }
+        return this._reg = function(v){
+          return function(o){
+            return v + "/" + o.name + "/" + (o.version || 'main') + "/" + (o.path || 'index.min.js');
+          };
+        }(v);
+      } else {
+        return this._reg = v;
+      }
     },
     init: function(){
       if (this.inited) {
@@ -190,12 +223,9 @@
       return (Array.isArray(urls)
         ? urls
         : [urls]).map(function(it){
-        return this$.getUrl(it);
+        return this$._url(it);
       }).map(function(it){
-        return {
-          url: it,
-          scope: this$.scope[it]
-        };
+        return this$.cache(it);
       }).filter(function(it){
         return it.scope;
       });
@@ -205,16 +235,21 @@
       urls = (Array.isArray(urls)
         ? urls
         : [urls]).map(function(it){
-        return this$.getUrl(it);
+        return this$._url(it);
       });
       return Promise.all(urls.map(function(url){
-        this$.scope[url] = "csp-" + (this$.counter++) + "-" + Math.random().toString(36).substring(2).substring(5);
+        var lib;
+        lib = this$.cache(url);
+        if (lib.scope) {
+          return Promise.resolve();
+        }
         return ld$.fetch(url, {
           method: "GET"
         }, {
           type: 'text'
         }).then(function(css){
           var ret;
+          this$.scope[url] = lib.scope = "csp-" + (this$.counter++) + "-" + Math.random().toString(36).substring(2).substring(5);
           ret = this$.converter.convert({
             css: css,
             name: this$.scope[url],

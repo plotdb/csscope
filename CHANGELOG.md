@@ -11,7 +11,8 @@
  - add `index.js`, `index.min.js` and deprecate `csscope.js`, `csscope.min.js`
  - upgrade modules
  - make building faster
-
+ - add caching
+ - simplify registry and url code
 
 ## v2.0.0
 
