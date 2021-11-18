@@ -19,7 +19,7 @@
       };
     }
     if (!o.id) {
-      o.id = rsp.id(o);
+      o.id = csp.id(o);
     }
     if (r = csp._cache[o.id]) {
       return r;

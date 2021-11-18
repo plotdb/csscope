@@ -3,10 +3,15 @@ csp = (a, b, c, d) ->
   csp.default.convert a, b, c, d
 
 csp.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}/#{o.path}"
+# lib spec:
+#  - id ( can be autogen )
+#  - url
+#  - name, version, path
+#  - scope
 csp._cache = {}
 csp.cache = (o) ->
   if typeof(o) == \string => o = {url: o}
-  if !o.id => o.id = rsp.id o
+  if !o.id => o.id = csp.id o
   if r = csp._cache[o.id] => return r
   return csp._cache[o.id] = {} <<< o
 

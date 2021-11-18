@@ -14,6 +14,7 @@
  - add caching
  - simplify registry and url code
  - tweak variable naming
+ - add lib spec information
 
 
 ## v2.0.0
