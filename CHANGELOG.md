@@ -13,6 +13,8 @@
  - make building faster
  - add caching
  - simplify registry and url code
+ - tweak variable naming
+
 
 ## v2.0.0
 

@@ -1,27 +1,27 @@
-csscope = (a, b, c, d) ->
-  if !csscope.default => csscope.default = new csscope.converter!
-  csscope.default.convert a, b, c, d
+csp = (a, b, c, d) ->
+  if !csp.default => csp.default = new csp.converter!
+  csp.default.convert a, b, c, d
 
-csscope.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}/#{o.path}"
-csscope._cache = {}
-csscope.cache = (o) ->
+csp.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}/#{o.path}"
+csp._cache = {}
+csp.cache = (o) ->
   if typeof(o) == \string => o = {url: o}
   if !o.id => o.id = rsp.id o
-  if r = csscope._cache[o.id] => return r
-  return csscope._cache[o.id] = {} <<< o
+  if r = csp._cache[o.id] => return r
+  return csp._cache[o.id] = {} <<< o
 
-csscope.converter = (opt={}) ->
+csp.converter = (opt={}) ->
   @scope-test = opt.scope-test
   @node = document.createElement("style")
-  @iframe = document.createElement("iframe")
-  @iframe.setAttribute \title, "for csscope css parsing"
-  @iframe.style <<< display: \none
-  @iframe.src = \about:blank
-  document.body.appendChild @iframe
+  @iframe = ifr = document.createElement("iframe")
+  ifr.setAttribute \title, "for csscope parsing"
+  ifr.style <<< display: \none
+  ifr.src = \about:blank
+  document.body.appendChild ifr
   @iframe.contentDocument.body.appendChild @node
   @
 
-csscope.converter.prototype = Object.create(Object.prototype) <<< do
+csp.converter.prototype = Object.create(Object.prototype) <<< do
   # get all names that we need to scope. For now only animationName is needed
   get-names: (rules, defs = {}) ->
     for rule in rules =>
@@ -92,21 +92,21 @@ csscope.converter.prototype = Object.create(Object.prototype) <<< do
     ret = @_convert(@node.sheet.rules, rule, name, scope-test, defs)
     return ret
 
-csscope.manager = (o = {}) ->
+csp.manager = (o = {}) ->
   @attr-name = "csscope"
   @_cache = {}
-  @converter = new csscope.converter!
+  @converter = new csp.converter!
   @counter = 0
   @registry(o.registry or "/assets/lib/")
   @init!
   @
 
-csscope.manager.prototype = Object.create(Object.prototype) <<< do
+csp.manager.prototype = Object.create(Object.prototype) <<< do
   cache: (o) ->
     if typeof(o) == \string => o = {url: o}
-    if !o.id => o.id = csscope.id o
+    if !o.id => o.id = csp.id o
     if r = @_cache[o.id] => return r
-    if csscope._cache[o.id] => return @_cache[o.id] = that
+    if csp._cache[o.id] => return @_cache[o.id] = that
     return @_cache[o.id] = {} <<< o
 
   _url: (o) ->
@@ -137,7 +137,7 @@ csscope.manager.prototype = Object.create(Object.prototype) <<< do
   get: (urls = []) ->
     (if Array.isArray(urls) => urls else [urls])
       .map ~> @_url it
-      .map ~> @cache it #{url: it, scope: @scope[it]}
+      .map ~> @cache it
       .filter -> it.scope
 
   load: (urls, scope-test) ->
@@ -156,5 +156,5 @@ csscope.manager.prototype = Object.create(Object.prototype) <<< do
       .then ~> @style-node.textContent = @style-content.join(\\n)
       .then ~> @get urls
 
-if module? => module.exports = csscope
-else if window? => window.csscope = csscope
+if module? => module.exports = csp
+else if window? => window.csscope = csp
