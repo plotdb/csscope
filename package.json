@@ -22,18 +22,19 @@
     "coverage": "npx nyc --reporter=text npm run test"
   },
   "devDependencies": {
-    "bootstrap": "^4.5.2",
-    "bootstrap.native": "^3.0.13",
     "@loadingio/bootstrap.ext": "^0.0.3",
     "@loadingio/debounce.js": "^0.0.1",
     "@loadingio/ldquery": "^2.2.1",
+    "@zbryikt/template": "^2.3.29",
+    "bootstrap": "^4.5.2",
+    "bootstrap.native": "^3.0.13",
     "fedep": "^0.0.17",
     "ldcover": "^2.1.0",
     "ldview": "^0.2.7",
     "livescript": "^1.6.0",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
-    "@zbryikt/template": "^2.3.29",
+    "puppeteer-core": "^11.0.0",
     "uglify-js": "^3.2.0"
   },
   "nyc": {

@@ -15,6 +15,7 @@
  - simplify registry and url code
  - tweak variable naming
  - add lib spec information
+ - use cache for prebundling to optimize loading process
 
 
 ## v2.0.0

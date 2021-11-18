@@ -59,6 +59,21 @@ To style element of scope root, simply use `:scope` pseudo class:
 csscope will replace `:scope` with the corresponding scope selector.
 
 
+## Pre bundling (WIP)
+
+Generate js / css files and use `csscope.cache` to preload assets. 
+
+Load from JS:
+
+    csscope.cache({inited: false, code: 'scoped-css-code', scope: 'scope-name'});
+
+Load from CSS:
+
+    script csscope.cache({inited: true, scope: 'scope-name'});
+    style: include bundle.css
+
+
+
 ## Todo
 
 Test against all major browsers.

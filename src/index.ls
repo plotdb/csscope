@@ -8,6 +8,8 @@ csp.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}/#{o.path}"
 #  - url
 #  - name, version, path
 #  - scope
+#  - inited: true if style is active.
+#  - code: css code for this lib
 csp._cache = {}
 csp.cache = (o) ->
   if typeof(o) == \string => o = {url: o}
@@ -151,12 +153,20 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
       .all(
         urls.map (url) ~>
           lib = @cache url
-          if lib.scope => return Promise.resolve!
-          ld$.fetch url, {method: "GET"}, {type: \text}
-            .then (css) ~>
-              @scope[url] = lib.scope = "csp-#{@counter++}-#{Math.random!toString(36)substring(2)substring(5)}"
-              ret = @converter.convert {css, name: @scope[url], scope-test}
-              @style-content.push ret
+          if lib.inited => return Promise.resolve!
+          if lib.scope and lib.code =>
+            Promise.resolve!
+              .then ~>
+                lib.inited = true
+                @style-content.push lib.code
+          else
+            ld$.fetch url, {method: "GET"}, {type: \text}
+              .then (css) ~>
+                lib <<< code: css, inited: true
+                if !lib.scope => lib.scope = "csp-#{@counter++}-#{Math.random!toString(36)substring(2,7)}"
+                ret = @converter.convert {css, name: lib.scope, scope-test}
+                @style-content.push ret
+
       )
       .then ~> @style-node.textContent = @style-content.join(\\n)
       .then ~> @get urls

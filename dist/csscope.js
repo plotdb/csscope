@@ -241,23 +241,34 @@
       return Promise.all(urls.map(function(url){
         var lib;
         lib = this$.cache(url);
-        if (lib.scope) {
+        if (lib.inited) {
           return Promise.resolve();
         }
-        return ld$.fetch(url, {
-          method: "GET"
-        }, {
-          type: 'text'
-        }).then(function(css){
-          var ret;
-          this$.scope[url] = lib.scope = "csp-" + (this$.counter++) + "-" + Math.random().toString(36).substring(2).substring(5);
-          ret = this$.converter.convert({
-            css: css,
-            name: this$.scope[url],
-            scopeTest: scopeTest
+        if (lib.scope && lib.code) {
+          return Promise.resolve().then(function(){
+            lib.inited = true;
+            return this$.styleContent.push(lib.code);
           });
-          return this$.styleContent.push(ret);
-        });
+        } else {
+          return ld$.fetch(url, {
+            method: "GET"
+          }, {
+            type: 'text'
+          }).then(function(css){
+            var ret;
+            lib.code = css;
+            lib.inited = true;
+            if (!lib.scope) {
+              lib.scope = "csp-" + (this$.counter++) + "-" + Math.random().toString(36).substring(2, 7);
+            }
+            ret = this$.converter.convert({
+              css: css,
+              name: lib.scope,
+              scopeTest: scopeTest
+            });
+            return this$.styleContent.push(ret);
+          });
+        }
       })).then(function(){
         return this$.styleNode.textContent = this$.styleContent.join('\n');
       }).then(function(){
