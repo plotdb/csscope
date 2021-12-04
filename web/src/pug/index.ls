@@ -25,6 +25,7 @@ m = ld$.create name: 'style', attr: {type: "text/css"}
 m.textContent = ret
 document.body.appendChild m
     
+
 view = new ldView do
   root: document.body
   action: click: do
@@ -32,7 +33,7 @@ view = new ldView do
       node.classList.toggle \on
       toggle!
 
-/*
+
 cssmgr = new csscope.manager!
 
 # https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css
@@ -46,4 +47,3 @@ cssmgr.load urls
     libs = view.getAll('csslib')
     libs.map (d,i) ->
       cssmgr.scope d, urls[i]
-*/
