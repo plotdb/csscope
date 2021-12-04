@@ -26,6 +26,7 @@ csp.converter = (opt={}) ->
   ifr.src = \about:blank
   document.body.appendChild ifr
   @iframe.contentDocument.body.appendChild @node
+  @_idx = 0 # use for comment refreshing
   @
 
 csp.converter.prototype = Object.create(Object.prototype) <<< do
@@ -93,7 +94,9 @@ csp.converter.prototype = Object.create(Object.prototype) <<< do
     if !rule => rule = ".#name"
     if !name => name = rule
     if !scope-test => scope-test = @scope-test
-    @node.textContent = css
+    # if css == textContent, rules won't be updated and will be the patched rules
+    # but we need a raw, plain rules, so we simply add a different comment to force update
+    @node.textContent = (css or '') + "/*#{@_idx++}*/"
     ret = ""
     defs = @get-names(@node.sheet.rules, {})
     ret = @_convert(@node.sheet.rules, rule, name, scope-test, defs)

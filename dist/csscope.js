@@ -37,6 +37,7 @@
     ifr.src = 'about:blank';
     document.body.appendChild(ifr);
     this.iframe.contentDocument.body.appendChild(this.node);
+    this._idx = 0;
     return this;
   };
   csp.converter.prototype = import$(Object.create(Object.prototype), {
@@ -140,7 +141,7 @@
       if (!scopeTest) {
         scopeTest = this.scopeTest;
       }
-      this.node.textContent = css;
+      this.node.textContent = (css || '') + ("/*" + (this._idx++) + "*/");
       ret = "";
       defs = this.getNames(this.node.sheet.rules, {});
       ret = this._convert(this.node.sheet.rules, rule, name, scopeTest, defs);

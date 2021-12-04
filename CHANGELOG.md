@@ -16,6 +16,7 @@
  - tweak variable naming
  - add lib spec information
  - use cache for prebundling to optimize loading process
+ - fix bug: append different comment to force css rules to refresh
 
 
 ## v2.0.0
