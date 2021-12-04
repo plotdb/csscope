@@ -17,7 +17,7 @@
  - add lib spec information
  - use cache for prebundling to optimize loading process
  - fix bug: append different comment to force css rules to refresh
-
+ - support scoping of parsed CSS string ( CSSRuleList ) directly
 
 ## v2.0.0
 

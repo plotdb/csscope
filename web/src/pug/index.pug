@@ -59,6 +59,13 @@ block body
             div
               button.ui.primary.button Save
               button.ui.button Cancel
+    +nbr(2)
+    h3 Scoping by CSSRuleList
+    p instead of CSS Text, csscope can also scope CSSRuleList directly.
+    .card: .css-rule-list.card-body
+      div this text should be red if CSSRuleList support works
+
+    
 
 block script
   script: include:lsc index.ls

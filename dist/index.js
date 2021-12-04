@@ -123,7 +123,7 @@
       }
     },
     convert: function(a, b, c, d){
-      var opt, ref$, name, css, rule, scopeTest, ret, defs;
+      var opt, ref$, name, css, rule, scopeTest, rules, defs;
       ref$ = opt = typeof a === 'object'
         ? a
         : {
@@ -141,11 +141,11 @@
       if (!scopeTest) {
         scopeTest = this.scopeTest;
       }
-      this.node.textContent = (css || '') + ("/*" + (this._idx++) + "*/");
-      ret = "";
-      defs = this.getNames(this.node.sheet.rules, {});
-      ret = this._convert(this.node.sheet.rules, rule, name, scopeTest, defs);
-      return ret;
+      rules = typeof css === 'object'
+        ? css
+        : (this.node.textContent = (css || '') + ("/*" + (this._idx++) + "*/"), this.node.sheet.rules);
+      defs = this.getNames(rules, {});
+      return this._convert(rules, rule, name, scopeTest, defs) || '';
     }
   });
   csp.manager = function(o){

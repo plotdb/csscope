@@ -94,13 +94,14 @@ csp.converter.prototype = Object.create(Object.prototype) <<< do
     if !rule => rule = ".#name"
     if !name => name = rule
     if !scope-test => scope-test = @scope-test
-    # if css == textContent, rules won't be updated and will be the patched rules
-    # but we need a raw, plain rules, so we simply add a different comment to force update
-    @node.textContent = (css or '') + "/*#{@_idx++}*/"
-    ret = ""
-    defs = @get-names(@node.sheet.rules, {})
-    ret = @_convert(@node.sheet.rules, rule, name, scope-test, defs)
-    return ret
+    rules = if typeof(css) == \object => css
+    else
+      # if css == textContent, rules won't be updated and will be the patched rules
+      # but we need a raw, plain rules, so we simply add a different comment to force update
+      @node.textContent = (css or '') + "/*#{@_idx++}*/"
+      @node.sheet.rules
+    defs = @get-names rules, {}
+    return @_convert(rules, rule, name, scope-test, defs) or ''
 
 csp.manager = (o = {}) ->
   @attr-name = "csscope"
