@@ -4,6 +4,13 @@
 
  - rename `csscope.js`, `csscope.min.js` to `index.js`, `index.min.js`
 
+## v2.0.2
+
+ - support custom environment
+ - support as a node module
+ - use `cssRules` to replace legacy `rules` member of `CSSStyleSheet`
+ - add sample usage in node environment
+
 
 ## v2.0.1
 
