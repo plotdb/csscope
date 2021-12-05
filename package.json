@@ -30,6 +30,7 @@
     "bootstrap": "^4.5.2",
     "bootstrap.native": "^3.0.13",
     "fedep": "^0.0.17",
+    "jsdom": "^19.0.0",
     "ldcover": "^2.1.0",
     "ldview": "^0.2.7",
     "livescript": "^1.6.0",
