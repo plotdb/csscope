@@ -1,7 +1,10 @@
+var win, doc
+
 csp = (a, b, c, d) ->
   if !csp.default => csp.default = new csp.converter!
   csp.default.convert a, b, c, d
 
+csp.env = -> [win, doc] := [it, it.document]
 csp.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}/#{o.path}"
 # lib spec:
 #  - id ( can be autogen )
@@ -19,12 +22,12 @@ csp.cache = (o) ->
 
 csp.converter = (opt={}) ->
   @scope-test = opt.scope-test
-  @node = document.createElement("style")
-  @iframe = ifr = document.createElement("iframe")
+  @node = doc.createElement("style")
+  @iframe = ifr = doc.createElement("iframe")
   ifr.setAttribute \title, "for csscope parsing"
   ifr.style <<< display: \none
   ifr.src = \about:blank
-  document.body.appendChild ifr
+  doc.body.appendChild ifr
   @iframe.contentDocument.body.appendChild @node
   @_idx = 0 # use for comment refreshing
   @
@@ -134,11 +137,11 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
   init: ->
     if @inited => return
     @inited = true
-    @style-node = document.createElement \style
+    @style-node = doc.createElement \style
     @style-node.setAttribute \type, \text/css
     @style-node.setAttribute \data-name, "csscope.manager"
     @style-content = []
-    document.body.appendChild @style-node
+    doc.body.appendChild @style-node
 
   scope: (node, urls = []) ->
     ret = @get urls
@@ -175,5 +178,6 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
       .then ~> @style-node.textContent = @style-content.join(\\n)
       .then ~> @get urls
 
+csp.env if self? => self else globalThis
 if module? => module.exports = csp
 else if window? => window.csscope = csp
