@@ -102,7 +102,7 @@ csp.converter.prototype = Object.create(Object.prototype) <<< do
       # if css == textContent, rules won't be updated and will be the patched rules
       # but we need a raw, plain rules, so we simply add a different comment to force update
       @node.textContent = (css or '') + "/*#{@_idx++}*/"
-      @node.sheet.rules
+      @node.sheet.cssRules
     defs = @get-names rules, {}
     return @_convert(rules, rule, name, scope-test, defs) or ''
 

@@ -147,7 +147,7 @@
       }
       rules = typeof css === 'object'
         ? css
-        : (this.node.textContent = (css || '') + ("/*" + (this._idx++) + "*/"), this.node.sheet.rules);
+        : (this.node.textContent = (css || '') + ("/*" + (this._idx++) + "*/"), this.node.sheet.cssRules);
       defs = this.getNames(rules, {});
       return this._convert(rules, rule, name, scopeTest, defs) || '';
     }
