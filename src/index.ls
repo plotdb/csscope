@@ -1,23 +1,17 @@
 var win, doc
+fetch = if window? => window.fetch else if module? and require? => require "node-fetch" else null
 
-_fetch = (url, config) ->
-  fetch url, config
-    .then (ret) ->
-      return if !ret => Promise.resolve {s: 404, t: 'unknown'}
-      else if !ret.ok =>
-        ret.clone!text!then (t) ->
-          e = null
-          try
-            json = JSON.parse(t)
-            if json and json.name == \lderror => e = json
-          catch err
-        {s: ret.status, t, e}
-      else ret.text!
-    .then (v) ->
-      if typeof(v) == \string => return v
-      err = new Error("#{v.s} #{v.t}") <<< {name: 'lderror', id: v.s, message: t}
-      if v.e => err <<< {v.e} <<< {json: v.e}
-      return Promise.reject err
+_fetch = (u, c) ->
+  (ret) <- fetch u, c .then _
+  if ret and ret.ok => return ret.text!
+  if !ret => return Promise.reject(new Error("404") <<< {name: \lderror, id: 404})
+  ret.clone!text!then (t) ->
+    i = ret.status or 404
+    e = new Error("#i #t") <<< {name: \lderror, id: i, message: t}
+    try
+      if (j = JSON.parse(t)) and j.name == \lderror => e <<< j <<< {json: j}
+    catch err
+    return Promise.reject e
 
 csp = (a, b, c, d) ->
   if !csp.default => csp.default = new csp.converter!

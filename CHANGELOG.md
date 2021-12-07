@@ -7,7 +7,7 @@
 ## v2.0.3 (upcoming)
 
  - remove ldquery dependency
-
+ - support fetch in nodejs context
 
 ## v2.0.2
 
