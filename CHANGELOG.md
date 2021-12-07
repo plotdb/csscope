@@ -4,6 +4,11 @@
 
  - rename `csscope.js`, `csscope.min.js` to `index.js`, `index.min.js`
 
+## v2.0.3 (upcoming)
+
+ - remove ldquery dependency
+
+
 ## v2.0.2
 
  - support custom environment

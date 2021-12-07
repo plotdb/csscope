@@ -1,5 +1,24 @@
 var win, doc
 
+_fetch = (url, config) ->
+  fetch url, config
+    .then (ret) ->
+      return if !ret => Promise.resolve {s: 404, t: 'unknown'}
+      else if !ret.ok =>
+        ret.clone!text!then (t) ->
+          e = null
+          try
+            json = JSON.parse(t)
+            if json and json.name == \lderror => e = json
+          catch err
+        {s: ret.status, t, e}
+      else ret.text!
+    .then (v) ->
+      if typeof(v) == \string => return v
+      err = new Error("#{v.s} #{v.t}") <<< {name: 'lderror', id: v.s, message: t}
+      if v.e => err <<< {v.e} <<< {json: v.e}
+      return Promise.reject err
+
 csp = (a, b, c, d) ->
   if !csp.default => csp.default = new csp.converter!
   csp.default.convert a, b, c, d
@@ -167,7 +186,7 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
                 lib.inited = true
                 @style-content.push lib.code
           else
-            ld$.fetch url, {method: "GET"}, {type: \text}
+            _fetch url, {method: "GET"}
               .then (css) ~>
                 lib <<< code: css, inited: true
                 if !lib.scope => lib.scope = "csp-#{@counter++}-#{Math.random!toString(36)substring(2,7)}"
