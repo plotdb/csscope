@@ -8,6 +8,9 @@
 
  - remove ldquery dependency
  - support fetch in nodejs context
+ - use stable scope naming
+ - support bundling
+
 
 ## v2.0.2
 
