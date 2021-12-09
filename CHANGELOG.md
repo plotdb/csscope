@@ -4,7 +4,8 @@
 
  - rename `csscope.js`, `csscope.min.js` to `index.js`, `index.min.js`
 
-## v2.0.3 (upcoming)
+
+## v2.0.3
 
  - remove ldquery dependency
  - support fetch in nodejs context
