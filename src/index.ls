@@ -19,6 +19,11 @@ csp = (a, b, c, d) ->
 
 csp.env = -> [win, doc] := [it, it.document]
 csp.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}/#{o.path}"
+csp.scope = (o) ->
+  # legacy scope generator. to be deleted
+  #"csp-#{@counter++}-#{Math.random!toString(36)substring(2,7)}"
+  o.scope or ('_' + btoa(csp.id(o)).replace(/=/g,'_'))
+
 # lib spec:
 #  - id ( can be autogen )
 #  - url
@@ -161,35 +166,39 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
     node.classList.add.apply node.classList, ret.map(-> it.scope)
     return ret
 
-  get: (urls = []) ->
-    (if Array.isArray(urls) => urls else [urls])
-      .map ~> @_url it
+  get: (libs = []) ->
+    (if Array.isArray(libs) => libs else [libs])
       .map ~> @cache it
       .filter -> it.scope
 
-  load: (urls, scope-test) ->
-    urls = (if Array.isArray(urls) => urls else [urls]).map ~> @_url it
+  bundle: (libs, scope-test) ->
+    @load libs, scope-test, true .then (libs) -> libs.map(->it.code).join(\\n)
+
+  load: (libs, scope-test, bundle) ->
+    libs = (if Array.isArray(libs) => libs else [libs]).map ~> @cache o
+    code = []
     Promise
       .all(
-        urls.map (url) ~>
-          lib = @cache url
-          if lib.inited => return Promise.resolve!
-          if lib.scope and lib.code =>
-            Promise.resolve!
-              .then ~>
-                lib.inited = true
-                @style-content.push lib.code
-          else
-            _fetch url, {method: "GET"}
-              .then (css) ~>
-                lib <<< code: css, inited: true
-                if !lib.scope => lib.scope = "csp-#{@counter++}-#{Math.random!toString(36)substring(2,7)}"
-                ret = @converter.convert {css, name: lib.scope, scope-test}
-                @style-content.push ret
-
+        libs.map (o) ~>
+          if o.inited => return Promise.resolve!
+          # predefined libs with code + scope, but not inited. code must be scoped.
+          if o.scope and o.code =>
+            o.inited = true
+            code.push o.code
+            return Promise.resolve!
+          _fetch @_url(o), {method: "GET"}
+            .then (css) ~>
+              o <<<
+                inited: true
+                scope: csscope.scope(o)
+                code: @converter.convert {css, name: o.scope, scope-test}
+              code.push o.code
       )
-      .then ~> @style-node.textContent = @style-content.join(\\n)
-      .then ~> @get urls
+      .then ~>
+        if bundle => return libs
+        @style-content.push.apply @style-content, code
+        @style-node.textContent = @style-content.join(\\n)
+        @get libs
 
 csp.env if self? => self else globalThis
 if module? => module.exports = csp

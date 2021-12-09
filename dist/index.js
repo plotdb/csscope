@@ -41,6 +41,9 @@
   csp.id = function(o){
     return o.id || o.url || o.name + "@" + o.version + "/" + o.path;
   };
+  csp.scope = function(o){
+    return o.scope || '_' + btoa(csp.id(o)).replace(/=/g, '_');
+  };
   csp._cache = {};
   csp.cache = function(o){
     var r;
@@ -250,59 +253,60 @@
       }));
       return ret;
     },
-    get: function(urls){
+    get: function(libs){
       var this$ = this;
-      urls == null && (urls = []);
-      return (Array.isArray(urls)
-        ? urls
-        : [urls]).map(function(it){
-        return this$._url(it);
-      }).map(function(it){
+      libs == null && (libs = []);
+      return (Array.isArray(libs)
+        ? libs
+        : [libs]).map(function(it){
         return this$.cache(it);
       }).filter(function(it){
         return it.scope;
       });
     },
-    load: function(urls, scopeTest){
-      var this$ = this;
-      urls = (Array.isArray(urls)
-        ? urls
-        : [urls]).map(function(it){
-        return this$._url(it);
+    bundle: function(libs, scopeTest){
+      return this.load(libs, scopeTest, true).then(function(libs){
+        return libs.map(function(it){
+          return it.code;
+        }).join('\n');
       });
-      return Promise.all(urls.map(function(url){
-        var lib;
-        lib = this$.cache(url);
-        if (lib.inited) {
+    },
+    load: function(libs, scopeTest, bundle){
+      var code, this$ = this;
+      libs = (Array.isArray(libs)
+        ? libs
+        : [libs]).map(function(){
+        return this$.cache(o);
+      });
+      code = [];
+      return Promise.all(libs.map(function(o){
+        if (o.inited) {
           return Promise.resolve();
         }
-        if (lib.scope && lib.code) {
-          return Promise.resolve().then(function(){
-            lib.inited = true;
-            return this$.styleContent.push(lib.code);
-          });
-        } else {
-          return _fetch(url, {
-            method: "GET"
-          }).then(function(css){
-            var ret;
-            lib.code = css;
-            lib.inited = true;
-            if (!lib.scope) {
-              lib.scope = "csp-" + (this$.counter++) + "-" + Math.random().toString(36).substring(2, 7);
-            }
-            ret = this$.converter.convert({
-              css: css,
-              name: lib.scope,
-              scopeTest: scopeTest
-            });
-            return this$.styleContent.push(ret);
-          });
+        if (o.scope && o.code) {
+          o.inited = true;
+          code.push(o.code);
+          return Promise.resolve();
         }
+        return _fetch(this$._url(o), {
+          method: "GET"
+        }).then(function(css){
+          o.inited = true;
+          o.scope = csscope.scope(o);
+          o.code = this$.converter.convert({
+            css: css,
+            name: o.scope,
+            scopeTest: scopeTest
+          });
+          return code.push(o.code);
+        });
       })).then(function(){
-        return this$.styleNode.textContent = this$.styleContent.join('\n');
-      }).then(function(){
-        return this$.get(urls);
+        if (bundle) {
+          return libs;
+        }
+        this$.styleContent.push.apply(this$.styleContent, code);
+        this$.styleNode.textContent = this$.styleContent.join('\n');
+        return this$.get(libs);
       });
     }
   });
