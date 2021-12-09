@@ -9,10 +9,6 @@ echo "building index.ls -> index.js ..."
 echo "minify index.js -> index.min.js ..."
 ./node_modules/.bin/uglifyjs dist/index.js -m -c > dist/index.min.js
 
-echo "create deprecated csscope.js and csscope.min.js ..."
-cp dist/index.js dist/csscope.js
-cp dist/index.min.js dist/csscope.min.js
-
 echo "copy dist to web ..."
 rm -rf web/static/assets/lib/@plotdb/csscope/dev/
 mkdir -p web/static/assets/lib/@plotdb/csscope/dev/

@@ -1,6 +1,6 @@
 # Change Logs
 
-## v3.0.0 (upcoming)
+## v3.0.0
 
  - rename `csscope.js`, `csscope.min.js` to `index.js`, `index.min.js`
 
