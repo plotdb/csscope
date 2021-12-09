@@ -175,7 +175,7 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
     @load libs, scope-test, true .then (libs) -> libs.map(->it.code).join(\\n)
 
   load: (libs, scope-test, bundle) ->
-    libs = (if Array.isArray(libs) => libs else [libs]).map ~> @cache o
+    libs = (if Array.isArray(libs) => libs else [libs]).map (o) ~> @cache o
     code = []
     Promise
       .all(

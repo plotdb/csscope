@@ -1,5 +1,10 @@
 # Change Logs
 
+## v3.0.1
+
+ - fix bug: missing `o` variable name in `load` function
+
+
 ## v3.0.0
 
  - rename `csscope.js`, `csscope.min.js` to `index.js`, `index.min.js`

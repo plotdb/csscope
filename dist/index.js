@@ -275,7 +275,7 @@
       var code, this$ = this;
       libs = (Array.isArray(libs)
         ? libs
-        : [libs]).map(function(){
+        : [libs]).map(function(o){
         return this$.cache(o);
       });
       code = [];
