@@ -292,7 +292,7 @@
           method: "GET"
         }).then(function(css){
           o.inited = true;
-          o.scope = csscope.scope(o);
+          o.scope = csp.scope(o);
           o.code = this$.converter.convert({
             css: css,
             name: o.scope,

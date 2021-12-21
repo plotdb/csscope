@@ -190,7 +190,7 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
             .then (css) ~>
               o <<<
                 inited: true
-                scope: csscope.scope(o)
+                scope: csp.scope(o)
                 code: @converter.convert {css, name: o.scope, scope-test}
               code.push o.code
       )

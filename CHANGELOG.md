@@ -1,5 +1,10 @@
 # Change Logs
 
+## v3.0.2
+
+ - fix bug: `csscope` instead of `csp` is used but only `csp` is defined
+
+
 ## v3.0.1
 
  - fix bug: missing `o` variable name in `load` function
