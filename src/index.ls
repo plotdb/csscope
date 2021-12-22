@@ -63,8 +63,22 @@ csp.converter.prototype = Object.create(Object.prototype) <<< do
     ret = ""
     for rule in rules =>
       # rule with animationName defined
-      if rule.style and defs[rule.style.animationName] =>
-        rule.style.animationName = "#{name}__#{rule.style.animationName}"
+      # we have to parse `animation` if `animationName` doesn't exist,
+      # which is possible for nodejs environment.
+      # TODO: our current implementation may be wrong in some edge cases.
+      # for more information:
+      #   https://www.w3.org/TR/css-animations-1/#example-f4782312
+      if rule.style =>
+        if defs[rule.style.animationName] =>
+          rule.style.animationName = "#{name}__#{rule.style.animationName}"
+        else if rule.style.animation =>
+          matched = false
+          rule.style.animation = rule.style.animation.split(' ').map(->
+            if matched or !defs[it] => return it
+            matched = true
+            return "#{name}__#{it}"
+          ).join(' ')
+
       # general rule
       if rule.selectorText =>
         if !scope-test =>
@@ -172,6 +186,13 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
       .filter -> it.scope
 
   bundle: (libs, scope-test) ->
+    libs = if Array.isArray(libs) => libs else [libs]
+    hash = {}
+    libs
+      .map (o) ~> @cache o
+      .filter -> it and it.id
+      .map -> hash[it.id] = it
+    libs = [v for k,v of hash]
     @load libs, scope-test, true .then (libs) -> libs.map(->it.code).join(\\n)
 
   load: (libs, scope-test, bundle) ->

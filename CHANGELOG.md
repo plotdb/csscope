@@ -1,5 +1,11 @@
 # Change Logs
 
+## v3.0.3 (upcoming)
+
+ - fix bug: we use animationName, which is not available in JSDOM context.
+ - dedup in bundler
+ 
+
 ## v3.0.2
 
  - fix bug: `csscope` instead of `csp` is used but only `csp` is defined

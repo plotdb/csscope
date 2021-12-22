@@ -89,26 +89,31 @@
       return defs;
     },
     _convert: function(rules, scopeRule, name, scopeTest, defs){
-      var ret, i$, len$, rule, sel, code;
+      var ret, i$, len$, rule, matched, sel, code;
       defs == null && (defs = {});
       ret = "";
       for (i$ = 0, len$ = rules.length; i$ < len$; ++i$) {
         rule = rules[i$];
-        if (rule.style && defs[rule.style.animationName]) {
-          rule.style.animationName = name + "__" + rule.style.animationName;
+        if (rule.style) {
+          if (defs[rule.style.animationName]) {
+            rule.style.animationName = name + "__" + rule.style.animationName;
+          } else if (rule.style.animation) {
+            matched = false;
+            rule.style.animation = rule.style.animation.split(' ').map(fn$).join(' ');
+          }
         }
         if (rule.selectorText) {
           if (!scopeTest) {
-            sel = rule.selectorText.split(',').map(fn$).map(fn1$).join(',');
+            sel = rule.selectorText.split(',').map(fn1$).map(fn2$).join(',');
           } else {
-            sel = rule.selectorText.split(',').map(fn2$).map(fn3$).join(',');
+            sel = rule.selectorText.split(',').map(fn3$).map(fn4$).join(',');
           }
-          ret += "" + sel + " {\n  " + Array.from(rule.style).map(fn4$).join(';') + "\n}";
+          ret += "" + sel + " {\n  " + Array.from(rule.style).map(fn5$).join(';') + "\n}";
           rule.selectorText = sel;
         } else if (rule.name) {
-          sel = rule.name.split(',').map(fn5$).map(fn6$).join(',');
+          sel = rule.name.split(',').map(fn6$).map(fn7$).join(',');
           rule.name = sel;
-          ret += "@keyframes " + sel + " {\n  " + Array.from(rule.cssRules).map(fn7$).join('\n') + "\n}";
+          ret += "@keyframes " + sel + " {\n  " + Array.from(rule.cssRules).map(fn8$).join('\n') + "\n}";
         } else if (rule.cssRules) {
           code = this._convert(rule.cssRules, scopeRule, name, scopeTest, defs);
           ret += "@media " + rule.conditionText + " {\n  " + code + "\n}";
@@ -116,19 +121,27 @@
       }
       return ret;
       function fn$(it){
-        return it.trim();
+        var matched;
+        if (matched || !defs[it]) {
+          return it;
+        }
+        matched = true;
+        return name + "__" + it;
       }
       function fn1$(it){
+        return it.trim();
+      }
+      function fn2$(it){
         if (it === ":scope") {
           return scopeRule;
         } else {
           return scopeRule + " " + it;
         }
       }
-      function fn2$(it){
+      function fn3$(it){
         return it.trim();
       }
-      function fn3$(it){
+      function fn4$(it){
         var ref$, h, t, h1, h2;
         if (it === ":scope") {
           return scopeRule;
@@ -143,16 +156,16 @@
           : ['', h], h1 = ref$[0], h2 = ref$[1];
         return (scopeRule + " :not(" + scopeTest + ") " + it + ",") + (scopeRule + " > " + h1 + ":not(" + scopeTest + ")" + h2 + " " + t.join(' '));
       }
-      function fn4$(it){
+      function fn5$(it){
         return it + ":" + rule.style[it] + (rule.style.getPropertyPriority(it) === 'important' ? '!important' : '');
       }
-      function fn5$(it){
+      function fn6$(it){
         return it.trim();
       }
-      function fn6$(it){
+      function fn7$(it){
         return name + "__" + it;
       }
-      function fn7$(it){
+      function fn8$(it){
         return it.cssText;
       }
     },
@@ -265,6 +278,24 @@
       });
     },
     bundle: function(libs, scopeTest){
+      var hash, res$, k, v, this$ = this;
+      libs = Array.isArray(libs)
+        ? libs
+        : [libs];
+      hash = {};
+      libs.map(function(o){
+        return this$.cache(o);
+      }).filter(function(it){
+        return it && it.id;
+      }).map(function(it){
+        return hash[it.id] = it;
+      });
+      res$ = [];
+      for (k in hash) {
+        v = hash[k];
+        res$.push(v);
+      }
+      libs = res$;
       return this.load(libs, scopeTest, true).then(function(libs){
         return libs.map(function(it){
           return it.code;
