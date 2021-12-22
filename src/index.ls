@@ -18,7 +18,7 @@ csp = (a, b, c, d) ->
   csp.default.convert a, b, c, d
 
 csp.env = -> [win, doc] := [it, it.document]
-csp.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}/#{o.path}"
+csp.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}:#{o.path}"
 csp.scope = (o) ->
   # legacy scope generator. to be deleted
   #"csp-#{@counter++}-#{Math.random!toString(36)substring(2,7)}"

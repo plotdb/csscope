@@ -4,6 +4,7 @@
 
  - fix bug: we use animationName, which is not available in JSDOM context.
  - dedup in bundler
+ - fix typo in id function
  
 
 ## v3.0.2
