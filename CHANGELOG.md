@@ -1,6 +1,6 @@
 # Change Logs
 
-## v3.0.3 (upcoming)
+## v3.0.3
 
  - fix bug: we use animationName, which is not available in JSDOM context.
  - dedup in bundler
