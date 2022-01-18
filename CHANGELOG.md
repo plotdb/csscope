@@ -4,6 +4,7 @@
 
  - default empty in version / path when building id
  - lookup acceptable versions in cache if version range provided.
+ - support custom registry that return content + version directly.
 
 
 ## v3.0.3

@@ -222,13 +222,18 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
             o.inited = true
             code.push o.code
             return Promise.resolve!
-          _fetch @_url(o), {method: "GET"}
-            .then (css) ~>
-              o <<<
-                inited: true
-                scope: csp.scope(o)
-                code: @converter.convert {css, name: o.scope, scope-test}
-              code.push o.code
+
+          url = @_url o
+          p = if url.then => url.then ~>
+            @cache(o <<< id: undefined, version: it.version)
+            return it
+          else _fetch url, {method: \GET} .then -> {content: it}
+          p.then ({content}) ~>
+            o <<<
+              inited: true
+              scope: csp.scope o
+              code: @converter.convert {css: content, name: o.scope, scope-test}
+            code.push o.code
       )
       .then ~>
         if bundle => return libs

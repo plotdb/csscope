@@ -353,6 +353,7 @@
       });
       code = [];
       return Promise.all(libs.map(function(o){
+        var url, p;
         if (o.inited) {
           return Promise.resolve();
         }
@@ -361,13 +362,26 @@
           code.push(o.code);
           return Promise.resolve();
         }
-        return _fetch(this$._url(o), {
-          method: "GET"
-        }).then(function(css){
+        url = this$._url(o);
+        p = url.then
+          ? url.then(function(it){
+            this$.cache((o.id = undefined, o.version = it.version, o));
+            return it;
+          })
+          : _fetch(url, {
+            method: 'GET'
+          }).then(function(it){
+            return {
+              content: it
+            };
+          });
+        return p.then(function(arg$){
+          var content;
+          content = arg$.content;
           o.inited = true;
           o.scope = csp.scope(o);
           o.code = this$.converter.convert({
-            css: css,
+            css: content,
             name: o.scope,
             scopeTest: scopeTest
           });
