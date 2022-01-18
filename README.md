@@ -74,6 +74,7 @@ where `options` is an object with following posisble fields:
      - `fetch({name, version, path})`: return `{version, content}` for specified item.
        - `version`: exact version of the returned content
        - `content`: content of the requested resource
+   - for more information, check `@plotdb/registry` module.
 
 
 ## Pre bundling (WIP)
