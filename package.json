@@ -57,11 +57,13 @@
       "@loadingio/bootstrap.ext",
       "@loadingio/ldquery",
       "@loadingio/debounce.js",
+      "@plotdb/semver",
       "ldview",
       "ldcover"
     ]
   },
   "dependencies": {
+    "@plotdb/semver": "^0.0.1",
     "node-fetch": "^2.6.6"
   }
 }

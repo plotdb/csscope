@@ -18,7 +18,7 @@ csp = (a, b, c, d) ->
   csp.default.convert a, b, c, d
 
 csp.env = -> [win, doc] := [it, it.document]
-csp.id = (o) -> o.id or o.url or "#{o.name}@#{o.version}:#{o.path}"
+csp.id = (o) -> o.id or o.url or "#{o.name}@#{o.version or ''}:#{o.path or ''}"
 csp.scope = (o) ->
   # legacy scope generator. to be deleted
   #"csp-#{@counter++}-#{Math.random!toString(36)substring(2,7)}"
@@ -32,11 +32,27 @@ csp.scope = (o) ->
 #  - inited: true if style is active.
 #  - code: css code for this lib
 csp._cache = {}
+csp._ver = {map: {}, list: {}}
 csp.cache = (o) ->
   if typeof(o) == \string => o = {url: o}
   if !o.id => o.id = csp.id o
-  if r = csp._cache[o.id] => return r
-  return csp._cache[o.id] = {} <<< o
+  if @_cache[o.id] => return that
+  if o.id and !o.name =>
+    ret = /^(\S+)@(\S+):(\S+)$/.exec(o.id)
+    if !ret => [n,v,p] = [o.id, '', '']
+    else [n,v,p] = [ret.1, ret.2, ret.3]
+  else [n,v,p] = [o.name, o.version or '', o.path or '']
+  if /[^0-9.]/.exec v =>
+    if @_ver.map{}[n][v] => v = that
+    if @_cache[csp.id({name: n, version: v, path: p})] => return that
+    for i from 0 til @_ver.list[][n].length =>
+      ver = @_ver.list[n][i]
+      if !semver.fit(ver, v) => continue
+      @_ver.map[n][v] = ver
+      o.id = csp.id {name: n, version: ver, path: p}
+      if @_cache[o.id] => return that
+  if !(v in @_ver.list[][n]) => @_ver.list[n].push v
+  return @_cache[o.id] = o
 
 csp.converter = (opt={}) ->
   @scope-test = opt.scope-test
@@ -151,9 +167,8 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
   cache: (o) ->
     if typeof(o) == \string => o = {url: o}
     if !o.id => o.id = csp.id o
-    if r = @_cache[o.id] => return r
-    if csp._cache[o.id] => return @_cache[o.id] = that
-    return @_cache[o.id] = {} <<< o
+    if @_cache[o.id] => return that
+    return @_cache[o.id] = csp.cache o
 
   _url: (o) ->
     return if typeof(o) == \string => o

@@ -1,5 +1,11 @@
 # Change Logs
 
+## v3.1.0 (upcoming)
+
+ - default empty in version / path when building id
+ - lookup acceptable versions in cache if version range provided.
+
+
 ## v3.0.3
 
  - fix bug: we use animationName, which is not available in JSDOM context.

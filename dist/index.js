@@ -39,14 +39,18 @@
     return ref$ = [it, it.document], win = ref$[0], doc = ref$[1], ref$;
   };
   csp.id = function(o){
-    return o.id || o.url || o.name + "@" + o.version + ":" + o.path;
+    return o.id || o.url || o.name + "@" + (o.version || '') + ":" + (o.path || '');
   };
   csp.scope = function(o){
     return o.scope || '_' + btoa(csp.id(o)).replace(/=/g, '_');
   };
   csp._cache = {};
+  csp._ver = {
+    map: {},
+    list: {}
+  };
   csp.cache = function(o){
-    var r;
+    var that, ret, ref$, n, v, p, i$, to$, i, ver;
     if (typeof o === 'string') {
       o = {
         url: o
@@ -55,10 +59,51 @@
     if (!o.id) {
       o.id = csp.id(o);
     }
-    if (r = csp._cache[o.id]) {
-      return r;
+    if (that = this._cache[o.id]) {
+      return that;
     }
-    return csp._cache[o.id] = import$({}, o);
+    if (o.id && !o.name) {
+      ret = /^(\S+)@(\S+):(\S+)$/.exec(o.id);
+      if (!ret) {
+        ref$ = [o.id, '', ''], n = ref$[0], v = ref$[1], p = ref$[2];
+      } else {
+        ref$ = [ret[1], ret[2], ret[3]], n = ref$[0], v = ref$[1], p = ref$[2];
+      }
+    } else {
+      ref$ = [o.name, o.version || '', o.path || ''], n = ref$[0], v = ref$[1], p = ref$[2];
+    }
+    if (/[^0-9.]/.exec(v)) {
+      if (that = ((ref$ = this._ver.map)[n] || (ref$[n] = {}))[v]) {
+        v = that;
+      }
+      if (that = this._cache[csp.id({
+        name: n,
+        version: v,
+        path: p
+      })]) {
+        return that;
+      }
+      for (i$ = 0, to$ = ((ref$ = this._ver.list)[n] || (ref$[n] = [])).length; i$ < to$; ++i$) {
+        i = i$;
+        ver = this._ver.list[n][i];
+        if (!semver.fit(ver, v)) {
+          continue;
+        }
+        this._ver.map[n][v] = ver;
+        o.id = csp.id({
+          name: n,
+          version: ver,
+          path: p
+        });
+        if (that = this._cache[o.id]) {
+          return that;
+        }
+      }
+    }
+    if (!in$(v, (ref$ = this._ver.list)[n] || (ref$[n] = []))) {
+      this._ver.list[n].push(v);
+    }
+    return this._cache[o.id] = o;
   };
   csp.converter = function(opt){
     var ifr;
@@ -207,7 +252,7 @@
   };
   csp.manager.prototype = import$(Object.create(Object.prototype), {
     cache: function(o){
-      var r, that;
+      var that;
       if (typeof o === 'string') {
         o = {
           url: o
@@ -216,13 +261,10 @@
       if (!o.id) {
         o.id = csp.id(o);
       }
-      if (r = this._cache[o.id]) {
-        return r;
+      if (that = this._cache[o.id]) {
+        return that;
       }
-      if (that = csp._cache[o.id]) {
-        return this._cache[o.id] = that;
-      }
-      return this._cache[o.id] = import$({}, o);
+      return this._cache[o.id] = csp.cache(o);
     },
     _url: function(o){
       var that;
@@ -351,5 +393,10 @@
     var own = {}.hasOwnProperty;
     for (var key in src) if (own.call(src, key)) obj[key] = src[key];
     return obj;
+  }
+  function in$(x, xs){
+    var i = -1, l = xs.length >>> 0;
+    while (++i < l) if (x === xs[i]) return true;
+    return false;
   }
 }).call(this);
