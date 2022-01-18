@@ -170,10 +170,10 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
     if @_cache[o.id] => return that
     return @_cache[o.id] = csp.cache o
 
-  _url: (o) ->
+  _ref: (o) ->
     return if typeof(o) == \string => o
     else if o.url => that
-    else @_reg o
+    else (@_reg.fetch or @_reg) o
 
   registry: (v) ->
     if typeof(v) == \string =>
@@ -223,11 +223,11 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
             code.push o.code
             return Promise.resolve!
 
-          url = @_url o
-          p = if url.then => url.then ~>
+          ref = @_ref o
+          p = if ref.then => ref.then ~>
             @cache(o <<< id: undefined, version: it.version)
             return it
-          else _fetch url, {method: \GET} .then -> {content: it}
+          else _fetch ref, {method: \GET} .then -> {content: it}
           p.then ({content}) ~>
             o <<<
               inited: true

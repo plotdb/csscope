@@ -266,13 +266,13 @@
       }
       return this._cache[o.id] = csp.cache(o);
     },
-    _url: function(o){
+    _ref: function(o){
       var that;
       return typeof o === 'string'
         ? o
         : (that = o.url)
           ? that
-          : this._reg(o);
+          : this._reg.fetch(o) || this._reg(o);
     },
     registry: function(v){
       if (typeof v === 'string') {
@@ -353,7 +353,7 @@
       });
       code = [];
       return Promise.all(libs.map(function(o){
-        var url, p;
+        var ref, p;
         if (o.inited) {
           return Promise.resolve();
         }
@@ -362,13 +362,13 @@
           code.push(o.code);
           return Promise.resolve();
         }
-        url = this$._url(o);
-        p = url.then
-          ? url.then(function(it){
+        ref = this$._ref(o);
+        p = ref.then
+          ? ref.then(function(it){
             this$.cache((o.id = undefined, o.version = it.version, o));
             return it;
           })
-          : _fetch(url, {
+          : _fetch(ref, {
             method: 'GET'
           }).then(function(it){
             return {
