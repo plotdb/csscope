@@ -58,6 +58,23 @@ To style element of scope root, simply use `:scope` pseudo class:
 
 csscope will replace `:scope` with the corresponding scope selector.
 
+## csscope.manager
+
+use `csscope.manager` for managing library version and cache. usage:
+
+    csm = new csscope.manager(options)
+
+where `options` is an object with following posisble fields:
+
+ - `registry`: a registry object telling manager how to fetch requested resource. can be either
+   - a string. `csscope.manager` uses it as a root path to construct a resource URL.
+   - a function accepting `{name, version, path}` parameters. return either an URL for specific module, or a promise that resolves a `{version, content}` object:
+     - `version`: exact version of the returned content
+     - `content`: content of the requested resource
+   - an object, with following fields:
+     - `url({name, version, path})`: return an URL for specified item.
+     - `fetch({name, version, path})`: return `{version, content}` for specified item.
+
 
 ## Pre bundling (WIP)
 
