@@ -33,17 +33,31 @@ view = new ldView do
       node.classList.toggle \on
       toggle!
 
+unpkg = ({name, version, path}) ->
+  url = "https://unpkg.com/#{name}#{if version => '@' + version else ''}/#{path or ''}"
+  fetch url
+    .then (response) ->
+      ret = /^https:\/\/unpkg.com\/([^@]+)@([^/]+)\//.exec(response.url) or []
+      v = ret.2
+      response.text!then -> {version: v or version, content: it}
 
-cssmgr = new csscope.manager!
+cssmgr = new csscope.manager registry: unpkg
 
+# use plain url
 # https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css
 urls = <[
   https://unpkg.com/purecss@2.0.6/build/pure-min.css
   https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css
 ]>
 
-cssmgr.load urls
+# use module definition and custom registry
+libs = [
+  {name: "purecss", version: "2.0.6", path: "build/pure-min.css"}
+  {name: "materialize-css", version: "1.0.0", path: "dist/css/materialize.min.css"}
+]
+
+cssmgr.load libs
   .then ->
-    libs = view.getAll('csslib')
-    libs.map (d,i) ->
-      cssmgr.scope d, urls[i]
+    nodes = view.getAll('csslib')
+    nodes.map (d,i) ->
+      cssmgr.scope d, libs[i]

@@ -4,7 +4,7 @@ var pug_match_html=/["&<>]/;
 function pug_rethrow(e,n,r,t){if(!(e instanceof Error))throw e;if(!("undefined"==typeof window&&n||t))throw e.message+=" on line "+r,e;var o,a,i,s;try{t=t||require("fs").readFileSync(n,{encoding:"utf8"}),o=3,a=t.split("\n"),i=Math.max(r-o,0),s=Math.min(a.length,r+o)}catch(t){return e.message+=" - could not read from "+n+" ("+t.message+")",void pug_rethrow(e,null,r)}o=a.slice(i,s).map(function(e,n){var t=n+i+1;return(t==r?"  > ":"    ")+t+"| "+e}).join("\n"),e.path=n;try{e.message=(n||"Pug")+":"+r+"\n"+o+"\n\n"+e.message}catch(e){}throw e}function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;var pug_debug_filename, pug_debug_line;try {;
     var locals_for_with = (locals || {});
     
-    (function (Array, JSON, b64img, blockLoader, cssLoader, decache, escape, libLoader, scriptLoader, url, version) {
+    (function (Array, JSON, b64img, blockLoader, c, cssLoader, decache, defer, escape, libLoader, scriptLoader, url, version) {
       ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fweb\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003C!DOCTYPE html\u003E";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
@@ -12,7 +12,7 @@ if(!libLoader) {
   libLoader = {
     js: {url: {}},
     css: {url: {}},
-    root: function(r) { this._root = r; },
+    root: function(r) { libLoader._r = r; },
     _r: "/assets/lib",
     _v: "",
     version: function(v) { libLoader._v = (v ? "?v=" + v : ""); }
@@ -21,7 +21,7 @@ if(!libLoader) {
 }
 
 ;pug_debug_line = 15;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-pug_mixins["script"] = pug_interp = function(os){
+pug_mixins["script"] = pug_interp = function(os,cfg){
 var block = (this && this.block), attributes = (this && this.attributes) || {};
 ;pug_debug_line = 16;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
 if(!Array.isArray(os)) { os = [os]; }
@@ -33,21 +33,24 @@ if(!Array.isArray(os)) { os = [os]; }
       for (var pug_index0 = 0, $$l = $$obj.length; pug_index0 < $$l; pug_index0++) {
         var o = $$obj[pug_index0];
 ;pug_debug_line = 19;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-if(typeof(o) == "string") { url = o; }
+c = o;
+if(typeof(o) == "string") { url = o; c = cfg || {};}
 else if(o.url) { url = o.url; }
 else { url = libLoader._r + "/" + o.name + "/" + (o.version || 'main') + "/" + (o.path || "index.min.js"); }
-;pug_debug_line = 23;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-if (!libLoader.js.url[url]) {
 ;pug_debug_line = 24;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-libLoader.js.url[url] = true;
+if (!libLoader.js.url[url]) {
 ;pug_debug_line = 25;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-if (/^https?:\/\/./.exec(url)) {
+libLoader.js.url[url] = true;
 ;pug_debug_line = 26;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_attr("src", url, true, true)+pug_attr("defer", !!o.defer, true, true)+pug_attr("async", !!o.async, true, true)) + "\u003E\u003C\u002Fscript\u003E";
+defer = (typeof(c.defer) == "undefined" ? true : !!c.defer);
+;pug_debug_line = 27;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+if (/^https?:\/\/./.exec(url)) {
+;pug_debug_line = 28;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_attr("src", url, true, true)+pug_attr("defer", defer, true, true)+pug_attr("async", !!c.async, true, true)) + "\u003E\u003C\u002Fscript\u003E";
 }
 else {
-;pug_debug_line = 28;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_attr("src", url + libLoader._v, true, true)+pug_attr("defer", !!o.defer, true, true)+pug_attr("async", !!o.async, true, true)) + "\u003E\u003C\u002Fscript\u003E";
+;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_attr("src", url + libLoader._v, true, true)+pug_attr("defer", defer, true, true)+pug_attr("async", !!c.async, true, true)) + "\u003E\u003C\u002Fscript\u003E";
 }
 }
       }
@@ -57,21 +60,24 @@ pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_att
       $$l++;
       var o = $$obj[pug_index0];
 ;pug_debug_line = 19;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-if(typeof(o) == "string") { url = o; }
+c = o;
+if(typeof(o) == "string") { url = o; c = cfg || {};}
 else if(o.url) { url = o.url; }
 else { url = libLoader._r + "/" + o.name + "/" + (o.version || 'main') + "/" + (o.path || "index.min.js"); }
-;pug_debug_line = 23;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-if (!libLoader.js.url[url]) {
 ;pug_debug_line = 24;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-libLoader.js.url[url] = true;
+if (!libLoader.js.url[url]) {
 ;pug_debug_line = 25;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-if (/^https?:\/\/./.exec(url)) {
+libLoader.js.url[url] = true;
 ;pug_debug_line = 26;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_attr("src", url, true, true)+pug_attr("defer", !!o.defer, true, true)+pug_attr("async", !!o.async, true, true)) + "\u003E\u003C\u002Fscript\u003E";
+defer = (typeof(c.defer) == "undefined" ? true : !!c.defer);
+;pug_debug_line = 27;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+if (/^https?:\/\/./.exec(url)) {
+;pug_debug_line = 28;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_attr("src", url, true, true)+pug_attr("defer", defer, true, true)+pug_attr("async", !!c.async, true, true)) + "\u003E\u003C\u002Fscript\u003E";
 }
 else {
-;pug_debug_line = 28;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_attr("src", url + libLoader._v, true, true)+pug_attr("defer", !!o.defer, true, true)+pug_attr("async", !!o.async, true, true)) + "\u003E\u003C\u002Fscript\u003E";
+;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_attr("src", url + libLoader._v, true, true)+pug_attr("defer", defer, true, true)+pug_attr("async", !!c.async, true, true)) + "\u003E\u003C\u002Fscript\u003E";
 }
 }
     }
@@ -79,27 +85,28 @@ pug_html = pug_html + "\u003Cscript" + (" type=\"text\u002Fjavascript\""+pug_att
 }).call(this);
 
 };
-;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-pug_mixins["css"] = pug_interp = function(os){
+;pug_debug_line = 32;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+pug_mixins["css"] = pug_interp = function(os,cfg){
 var block = (this && this.block), attributes = (this && this.attributes) || {};
-;pug_debug_line = 31;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-if(!Array.isArray(os)) { os = [os]; }
 ;pug_debug_line = 33;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+if(!Array.isArray(os)) { os = [os]; }
+;pug_debug_line = 35;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
 // iterate os
 ;(function(){
   var $$obj = os;
   if ('number' == typeof $$obj.length) {
       for (var pug_index1 = 0, $$l = $$obj.length; pug_index1 < $$l; pug_index1++) {
         var o = $$obj[pug_index1];
-;pug_debug_line = 34;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-if(typeof(o) == "string") { url = o; }
+;pug_debug_line = 36;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+c = o;
+if(typeof(o) == "string") { url = o; c = cfg || {};}
 else if(o.url) { url = o.url; }
 else { url = libLoader._r + "/" + o.name + "/" + (o.version || 'main') + "/" + (o.path || "index.min.css"); }
-;pug_debug_line = 38;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+;pug_debug_line = 41;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
 if (!libLoader.css.url[url]) {
-;pug_debug_line = 39;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+;pug_debug_line = 42;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
 libLoader.css.url[url] = true;
-;pug_debug_line = 40;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+;pug_debug_line = 43;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
 pug_html = pug_html + "\u003Clink" + (" rel=\"stylesheet\" type=\"text\u002Fcss\""+pug_attr("href", url + libLoader._v, true, true)) + "\u003E";
 }
       }
@@ -108,15 +115,16 @@ pug_html = pug_html + "\u003Clink" + (" rel=\"stylesheet\" type=\"text\u002Fcss\
     for (var pug_index1 in $$obj) {
       $$l++;
       var o = $$obj[pug_index1];
-;pug_debug_line = 34;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
-if(typeof(o) == "string") { url = o; }
+;pug_debug_line = 36;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+c = o;
+if(typeof(o) == "string") { url = o; c = cfg || {};}
 else if(o.url) { url = o.url; }
 else { url = libLoader._r + "/" + o.name + "/" + (o.version || 'main') + "/" + (o.path || "index.min.css"); }
-;pug_debug_line = 38;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+;pug_debug_line = 41;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
 if (!libLoader.css.url[url]) {
-;pug_debug_line = 39;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+;pug_debug_line = 42;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
 libLoader.css.url[url] = true;
-;pug_debug_line = 40;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
+;pug_debug_line = 43;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fnode_modules\u002F@plotdb\u002Fsrcbuild\u002Fdist\u002Flib.pug";
 pug_html = pug_html + "\u003Clink" + (" rel=\"stylesheet\" type=\"text\u002Fcss\""+pug_attr("href", url + libLoader._v, true, true)) + "\u003E";
 }
     }
@@ -461,9 +469,9 @@ pug_mixins["script"]("/assets/lib/ldview/main/index.min.js");
 pug_mixins["script"]("/assets/lib/@plotdb/csscope/dev/index.min.js");
 ;pug_debug_line = 16;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fplotdb\u002Fprojects\u002Fcsscope\u002Fweb\u002Fsrc\u002Fpug\u002Fbase.pug";
 ;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_html = pug_html + "\u003Cscript\u003E";
+pug_html = pug_html + "\u003Cscript type=\"module\"\u003E";
 ;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_html = pug_html + "var scope,styles,toggle,iframe,ref$,style,ret,m,view,cssmgr,urls;scope=new csscope.converter({scopeTest:\"[scope]\"});styles=ld$.find(\"style\").map(function(e){var t,s,r;t=e.getAttribute(\"scope\");s=ld$.create({name:\"style\",attr:{type:\"text\u002Fcss\"}});r=scope.convert(t+\"\",e.textContent);s.textContent=r;return[e,s]});toggle=function(){var t;t=view.get(\"toggle\").classList.contains(\"on\");return styles.map(function(e){ld$.remove(e[0]);ld$.remove(e[1]);return document.body.appendChild(e[t?1:0])})};iframe=document.createElement(\"iframe\");ref$=iframe.style;ref$.pointerEvents=\"none\";ref$.border=0;ref$.width=0;ref$.height=0;ref$.opacity=0;document.body.appendChild(iframe);style=iframe.contentDocument.createElement(\"style\");style.setAttribute(\"type\",\"text\u002Fcss\");style.textContent=\"div { color: red }\";iframe.contentDocument.body.appendChild(style);ret=scope.convert(\"css-rule-list\",style.sheet.rules);m=ld$.create({name:\"style\",attr:{type:\"text\u002Fcss\"}});m.textContent=ret;document.body.appendChild(m);view=new ldView({root:document.body,action:{click:{toggle:function(e){var t;t=e.node;t.classList.toggle(\"on\");return toggle()}}}});cssmgr=new csscope.manager;urls=[\"https:\u002F\u002Funpkg.com\u002Fpurecss@2.0.6\u002Fbuild\u002Fpure-min.css\",\"https:\u002F\u002Fcdnjs.cloudflare.com\u002Fajax\u002Flibs\u002Fmaterialize\u002F1.0.0\u002Fcss\u002Fmaterialize.min.css\"];cssmgr.load(urls).then(function(){var e;e=view.getAll(\"csslib\");return e.map(function(e,t){return cssmgr.scope(e,urls[t])})});\u003C\u002Fscript\u003E\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";
+pug_html = pug_html + "var scope,styles,toggle,iframe,ref$,style,ret,m,view,unpkg,cssmgr,urls,libs;scope=new csscope.converter({scopeTest:\"[scope]\"});styles=ld$.find(\"style\").map(function(e){var t,s,n;t=e.getAttribute(\"scope\");s=ld$.create({name:\"style\",attr:{type:\"text\u002Fcss\"}});n=scope.convert(t+\"\",e.textContent);s.textContent=n;return[e,s]});toggle=function(){var t;t=view.get(\"toggle\").classList.contains(\"on\");return styles.map(function(e){ld$.remove(e[0]);ld$.remove(e[1]);return document.body.appendChild(e[t?1:0])})};iframe=document.createElement(\"iframe\");ref$=iframe.style;ref$.pointerEvents=\"none\";ref$.border=0;ref$.width=0;ref$.height=0;ref$.opacity=0;document.body.appendChild(iframe);style=iframe.contentDocument.createElement(\"style\");style.setAttribute(\"type\",\"text\u002Fcss\");style.textContent=\"div { color: red }\";iframe.contentDocument.body.appendChild(style);ret=scope.convert(\"css-rule-list\",style.sheet.rules);m=ld$.create({name:\"style\",attr:{type:\"text\u002Fcss\"}});m.textContent=ret;document.body.appendChild(m);view=new ldView({root:document.body,action:{click:{toggle:function(e){var t;t=e.node;t.classList.toggle(\"on\");return toggle()}}}});unpkg=function(e){var t,n,s,r;t=e.name,n=e.version,s=e.path;r=\"https:\u002F\u002Funpkg.com\u002F\"+t+(n?\"@\"+n:\"\")+\"\u002F\"+(s||\"\");return fetch(r).then(function(e){var t,s;t=\u002F^https:\\\u002F\\\u002Funpkg.com\\\u002F([^@]+)@([^\u002F]+)\\\u002F\u002F.exec(e.url)||[];s=t[2];return e.text().then(function(e){return{version:s||n,content:e}})})};cssmgr=new csscope.manager({registry:unpkg});urls=[\"https:\u002F\u002Funpkg.com\u002Fpurecss@2.0.6\u002Fbuild\u002Fpure-min.css\",\"https:\u002F\u002Fcdnjs.cloudflare.com\u002Fajax\u002Flibs\u002Fmaterialize\u002F1.0.0\u002Fcss\u002Fmaterialize.min.css\"];libs=[{name:\"purecss\",version:\"2.0.6\",path:\"build\u002Fpure-min.css\"},{name:\"materialize-css\",version:\"1.0.0\",path:\"dist\u002Fcss\u002Fmaterialize.min.css\"}];cssmgr.load(libs).then(function(){var e;e=view.getAll(\"csslib\");return e.map(function(e,t){return cssmgr.scope(e,libs[t])})});\u003C\u002Fscript\u003E\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";
     }.call(this, "Array" in locals_for_with ?
         locals_for_with.Array :
         typeof Array !== 'undefined' ? Array : undefined, "JSON" in locals_for_with ?
@@ -472,11 +480,15 @@ pug_html = pug_html + "var scope,styles,toggle,iframe,ref$,style,ret,m,view,cssm
         locals_for_with.b64img :
         typeof b64img !== 'undefined' ? b64img : undefined, "blockLoader" in locals_for_with ?
         locals_for_with.blockLoader :
-        typeof blockLoader !== 'undefined' ? blockLoader : undefined, "cssLoader" in locals_for_with ?
+        typeof blockLoader !== 'undefined' ? blockLoader : undefined, "c" in locals_for_with ?
+        locals_for_with.c :
+        typeof c !== 'undefined' ? c : undefined, "cssLoader" in locals_for_with ?
         locals_for_with.cssLoader :
         typeof cssLoader !== 'undefined' ? cssLoader : undefined, "decache" in locals_for_with ?
         locals_for_with.decache :
-        typeof decache !== 'undefined' ? decache : undefined, "escape" in locals_for_with ?
+        typeof decache !== 'undefined' ? decache : undefined, "defer" in locals_for_with ?
+        locals_for_with.defer :
+        typeof defer !== 'undefined' ? defer : undefined, "escape" in locals_for_with ?
         locals_for_with.escape :
         typeof escape !== 'undefined' ? escape : undefined, "libLoader" in locals_for_with ?
         locals_for_with.libLoader :
