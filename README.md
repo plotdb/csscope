@@ -68,12 +68,12 @@ where `options` is an object with following posisble fields:
 
  - `registry`: a registry object telling manager how to fetch requested resource. can be either
    - a string. `csscope.manager` uses it as a root path to construct a resource URL.
-   - a function accepting `{name, version, path}` parameters. return either an URL for specific module, or a promise that resolves a `{version, content}` object:
-     - `version`: exact version of the returned content
-     - `content`: content of the requested resource
+   - a function accepting `{name, version, path}` parameters. return an URL for specific module
    - an object, with following fields:
      - `url({name, version, path})`: return an URL for specified item.
      - `fetch({name, version, path})`: return `{version, content}` for specified item.
+       - `version`: exact version of the returned content
+       - `content`: content of the requested resource
 
 
 ## Pre bundling (WIP)
