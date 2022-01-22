@@ -173,7 +173,8 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
   _ref: (o) ->
     return if typeof(o) == \string => o
     else if o.url => that
-    else (@_reg.fetch or @_reg) o
+    else if @_reg.fetch => @_reg.fetch o
+    else @_reg o
 
   registry: (v) ->
     if typeof(v) == \string =>
