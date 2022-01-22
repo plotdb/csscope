@@ -1,11 +1,16 @@
 # Change Logs
 
-## v3.1.0 (upcoming)
+## v4.0.0
 
+ - fix bug: registry.fetch is used even if not defined.
  - default empty in version / path when building id
  - lookup acceptable versions in cache if version range provided.
  - support custom registry that return content + version directly.
  - use minimized dist file as main / browser default file
+ - upgrade modules
+ - patch test code to make it work with upgraded modules
+ - release with compact directory structure
+
 
 
 ## v3.0.3
