@@ -19,36 +19,22 @@
     "npm": ">=6.4.1"
   },
   "scripts": {
-    "start": "npx server -r web -o true",
-    "test": "npx mocha --require livescript ./test/index.ls",
-    "coverage": "npx nyc --reporter=text npm run test"
+    "start": "npx server -r web -o true"
   },
   "devDependencies": {
-    "@loadingio/bootstrap.ext": "^0.0.3",
-    "@loadingio/debounce.js": "^0.0.1",
-    "@loadingio/ldquery": "^2.2.1",
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/debounce.js": "^1.0.1",
+    "@loadingio/ldquery": "^3.0.2",
     "@zbryikt/template": "^2.3.33",
     "bootstrap": "^4.5.2",
     "bootstrap.native": "^3.0.13",
-    "fedep": "^0.0.17",
+    "fedep": "^1.1.2",
     "jsdom": "^19.0.0",
-    "ldcover": "^2.1.0",
-    "ldview": "^0.2.7",
+    "ldcover": "^3.0.1",
+    "ldview": "^1.0.0",
     "livescript": "^1.6.0",
-    "mocha": "^8.2.1",
-    "nyc": "^15.1.0",
     "puppeteer-core": "^11.0.0",
-    "uglify-js": "^3.2.0"
-  },
-  "nyc": {
-    "all": true,
-    "extension": ".ls",
-    "require": [
-      "livescript"
-    ],
-    "include": [
-      "src/**/*"
-    ]
+    "uglify-js": "^3.13.1"
   },
   "frontendDependencies": {
     "root": "web/static/assets/lib",
@@ -64,7 +50,7 @@
     ]
   },
   "dependencies": {
-    "@plotdb/semver": "^0.0.1",
-    "node-fetch": "^2.6.6"
+    "@plotdb/semver": "^0.0.2",
+    "node-fetch": "^3.2.0"
   }
 }
