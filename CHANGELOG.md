@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.0.2
+
+ - fix bug: `:scope` doesn't work if additional rules appended after `:scope`
+
+
 ## v4.0.1
 
  - downgrade `node-fetch` back to `v2.6.7` to make it work in nodejs
