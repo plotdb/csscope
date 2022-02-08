@@ -28,12 +28,12 @@
     "@zbryikt/template": "^2.3.33",
     "bootstrap": "^4.5.2",
     "bootstrap.native": "^3.0.13",
-    "fedep": "^1.1.2",
+    "fedep": "^1.1.5",
     "jsdom": "^19.0.0",
     "ldcover": "^3.0.1",
     "ldview": "^1.0.0",
     "livescript": "^1.6.0",
-    "puppeteer-core": "^11.0.0",
+    "puppeteer-core": "^13.2.0",
     "uglify-js": "^3.13.1"
   },
   "frontendDependencies": {
