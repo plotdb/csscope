@@ -4,6 +4,7 @@ block head
     .hint { background: #5f9 }
   style(type="text/css",scope="v1"): :stylus
     .hint { background: #f95 }
+    :scope > .scope-test { background: #9bf }
 block body
   .w-1024.rwd.mx-auto.my-4
     .d-flex.align-items-center
@@ -19,6 +20,7 @@ block body
         .hint.border.my-2.px-4.py-2.shadow-sm.rounded
           h2.mb-0 scope v2
           div should be #[span.text-success green] when scoping
+      .scope-test.p-2.rounded background should be cyan if #[code :scope] work correctly when scoping
     +nbr(2)
     h3 Library Scoping
     p loading external libraries ( pure css, materialize css, etc ) and apply in different parts of the same DOM tree.
