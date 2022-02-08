@@ -1,6 +1,7 @@
 var win, doc
 fetch = if window? => window.fetch else if module? and require? => require "node-fetch" else null
 
+is-scope = -> /^:scope[ .:\[#]|^:scope$/.exec it
 _fetch = (u, c) ->
   (ret) <- fetch u, c .then _
   if ret and ret.ok => return ret.text!
@@ -101,13 +102,13 @@ csp.converter.prototype = Object.create(Object.prototype) <<< do
           # vue favor ( affect child even if scoped)
           sel = rule
             .selectorText.split(',').map(->it.trim!)
-            .map(-> if it == ":scope" => scope-rule else "#scope-rule #it")
+            .map(-> if is-scope it => it.replace(/^:scope/, scope-rule) else "#scope-rule #it")
             .join(',')
         else
           # css module favor ( only in scope )
           sel = rule.selectorText.split(',').map(->it.trim!)
             .map ->
-              if it == ":scope" => return scope-rule
+              if is-scope(it) => return it.replace(/^:scope/, scope-rule)
               [h,...t] = it.split(' ').map(->it.trim!).filter(->it)
               [h1,h2] = if /^[a-zA-Z]/.exec(h) => [h,''] else ['',h]
               "#scope-rule :not(#scope-test) #it," +

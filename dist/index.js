@@ -1,8 +1,11 @@
 (function(){
-  var win, doc, fetch, _fetch, csp, slice$ = [].slice;
+  var win, doc, fetch, isScope, _fetch, csp, slice$ = [].slice;
   fetch = typeof window != 'undefined' && window !== null
     ? window.fetch
     : (typeof module != 'undefined' && module !== null) && (typeof require != 'undefined' && require !== null) ? require("node-fetch") : null;
+  isScope = function(it){
+    return /^:scope[ .:\[#]|^:scope$/.exec(it);
+  };
   _fetch = function(u, c){
     return fetch(u, c).then(function(ret){
       var ref$;
@@ -176,8 +179,8 @@
         return it.trim();
       }
       function fn2$(it){
-        if (it === ":scope") {
-          return scopeRule;
+        if (isScope(it)) {
+          return it.replace(/^:scope/, scopeRule);
         } else {
           return scopeRule + " " + it;
         }
@@ -187,8 +190,8 @@
       }
       function fn4$(it){
         var ref$, h, t, h1, h2;
-        if (it === ":scope") {
-          return scopeRule;
+        if (isScope(it)) {
+          return it.replace(/^:scope/, scopeRule);
         }
         ref$ = it.split(' ').map(function(it){
           return it.trim();
