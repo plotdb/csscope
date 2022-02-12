@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.0.3
+
+ - fix bug: use `cssText` for wrapped content generation to keep css variable as is.
+
+
 ## v4.0.2
 
  - fix bug: `:scope` doesn't work if additional rules appended after `:scope`

@@ -155,12 +155,19 @@
           } else {
             sel = rule.selectorText.split(',').map(fn3$).map(fn4$).join(',');
           }
-          ret += "" + sel + " {\n  " + Array.from(rule.style).map(fn5$).join(';') + "\n}";
+          ret += sel + "{" + rule.style.cssText + "}";
+          /*
+          ret += """
+          #sel {
+            #{Array.from(rule.style).map(-> "#it:#{rule.style.getPropertyValue(it)}#{if rule.style.getPropertyPriority(it) == 'important' => '!important' else ''}").join(';')}
+          }
+          """
+          */
           rule.selectorText = sel;
         } else if (rule.name) {
-          sel = rule.name.split(',').map(fn6$).map(fn7$).join(',');
+          sel = rule.name.split(',').map(fn5$).map(fn6$).join(',');
           rule.name = sel;
-          ret += "@keyframes " + sel + " {\n  " + Array.from(rule.cssRules).map(fn8$).join('\n') + "\n}";
+          ret += "@keyframes " + sel + " {\n  " + Array.from(rule.cssRules).map(fn7$).join('\n') + "\n}";
         } else if (rule.cssRules) {
           code = this._convert(rule.cssRules, scopeRule, name, scopeTest, defs);
           ret += "@media " + rule.conditionText + " {\n  " + code + "\n}";
@@ -204,15 +211,12 @@
         return (scopeRule + " :not(" + scopeTest + ") " + it + ",") + (scopeRule + " > " + h1 + ":not(" + scopeTest + ")" + h2 + " " + t.join(' '));
       }
       function fn5$(it){
-        return it + ":" + rule.style[it] + (rule.style.getPropertyPriority(it) === 'important' ? '!important' : '');
-      }
-      function fn6$(it){
         return it.trim();
       }
-      function fn7$(it){
+      function fn6$(it){
         return name + "__" + it;
       }
-      function fn8$(it){
+      function fn7$(it){
         return it.cssText;
       }
     },

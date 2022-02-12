@@ -114,12 +114,15 @@ csp.converter.prototype = Object.create(Object.prototype) <<< do
               "#scope-rule :not(#scope-test) #it," +
               "#scope-rule > #h1:not(#scope-test)#h2 #{t.join(' ')}"
             .join(',')
-
+        ret += """#sel{#{rule.style.cssText}}"""
+        # turns out that we don't have to iterate all styles - cssText just works for that
+        /*
         ret += """
         #sel {
-          #{Array.from(rule.style).map(-> "#it:#{rule.style[it]}#{if rule.style.getPropertyPriority(it) == 'important' => '!important' else ''}").join(';')}
+          #{Array.from(rule.style).map(-> "#it:#{rule.style.getPropertyValue(it)}#{if rule.style.getPropertyPriority(it) == 'important' => '!important' else ''}").join(';')}
         }
         """
+        */
         rule.selectorText = sel
       # animation
       else if rule.name =>
