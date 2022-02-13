@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.0.4
+
+ - fix bug: default filename incorrectly written as `index.min.js`, which should be `index.min.css`.
+
+
 ## v4.0.3
 
  - fix bug: use `cssText` for wrapped content generation to keep css variable as is.
