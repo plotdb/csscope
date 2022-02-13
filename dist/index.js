@@ -289,7 +289,7 @@
         }
         return this._reg = function(v){
           return function(o){
-            return v + "/" + o.name + "/" + (o.version || 'main') + "/" + (o.path || 'index.min.js');
+            return v + "/" + o.name + "/" + (o.version || 'main') + "/" + (o.path || 'index.min.css');
           };
         }(v);
       } else {

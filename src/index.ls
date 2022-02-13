@@ -183,7 +183,7 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
   registry: (v) ->
     if typeof(v) == \string =>
       if v[* - 1] == \/ => v = v.substring(0, v.length - 1)
-      @_reg = ((v) -> (o) -> "#{v}/#{o.name}/#{o.version or 'main'}/#{o.path or 'index.min.js'}") v
+      @_reg = ((v) -> (o) -> "#{v}/#{o.name}/#{o.version or 'main'}/#{o.path or 'index.min.css'}") v
     else @_reg = v
 
   init: ->
