@@ -1,5 +1,6 @@
 var win, doc
 fetch = if window? => window.fetch else if module? and require? => require "node-fetch" else null
+semver = if window? => window.semver else if modeul? and require? => require "@plotdb/semver" else null
 
 is-scope = -> /^:scope[ .:\[#]|^:scope$/.exec it
 _fetch = (u, c) ->

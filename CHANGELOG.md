@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.0.5
+
+ - add missing `@plotdb/semver`
+
+
 ## v4.0.4
 
  - fix bug: default filename incorrectly written as `index.min.js`, which should be `index.min.css`.

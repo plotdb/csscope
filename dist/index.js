@@ -1,8 +1,11 @@
 (function(){
-  var win, doc, fetch, isScope, _fetch, csp, slice$ = [].slice;
+  var win, doc, fetch, semver, isScope, _fetch, csp, slice$ = [].slice;
   fetch = typeof window != 'undefined' && window !== null
     ? window.fetch
     : (typeof module != 'undefined' && module !== null) && (typeof require != 'undefined' && require !== null) ? require("node-fetch") : null;
+  semver = typeof window != 'undefined' && window !== null
+    ? window.semver
+    : (typeof modeul != 'undefined' && modeul !== null) && (typeof require != 'undefined' && require !== null) ? require("@plotdb/semver") : null;
   isScope = function(it){
     return /^:scope[ .:\[#]|^:scope$/.exec(it);
   };
