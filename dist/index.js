@@ -77,7 +77,7 @@
     } else {
       ref$ = [o.name, o.version || '', o.path || ''], n = ref$[0], v = ref$[1], p = ref$[2];
     }
-    if (/[^0-9.]/.exec(v)) {
+    if (/^[0-9.]+$/.exec(v)) {
       if (that = ((ref$ = this._ver.map)[n] || (ref$[n] = {}))[v]) {
         v = that;
       }

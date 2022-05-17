@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.0.6
+
+ - fix bug: semantic version pattern matching incorrect
+
+
 ## v4.0.5
 
  - add missing `@plotdb/semver`
