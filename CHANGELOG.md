@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.0.7
+
+ - also consider `ns` in csscope.id
+
+
 ## v4.0.6
 
  - fix bug: semantic version pattern matching incorrect

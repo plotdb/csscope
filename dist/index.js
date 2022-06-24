@@ -44,7 +44,7 @@
     return ref$ = [it, it.document], win = ref$[0], doc = ref$[1], ref$;
   };
   csp.id = function(o){
-    return o.id || o.url || o.name + "@" + (o.version || '') + ":" + (o.path || '');
+    return o.id || o.url || (o.ns ? o.ns + ":" : '') + "" + o.name + "@" + (o.version || 'main') + ":" + (o.path || 'index.html');
   };
   csp.scope = function(o){
     return o.scope || '_' + btoa(csp.id(o)).replace(/=/g, '_');
