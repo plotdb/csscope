@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.0.8
+
+ - fix bug: appending `:not` makes psuedo elements fail to work. 
+
+
 ## v4.0.7
 
  - also consider `ns` in csscope.id

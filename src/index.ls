@@ -113,8 +113,13 @@ csp.converter.prototype = Object.create(Object.prototype) <<< do
               if is-scope(it) => return it.replace(/^:scope/, scope-rule)
               [h,...t] = it.split(' ').map(->it.trim!).filter(->it)
               [h1,h2] = if /^[a-zA-Z]/.exec(h) => [h,''] else ['',h]
-              "#scope-rule :not(#scope-test) #it," +
-              "#scope-rule > #h1:not(#scope-test)#h2 #{t.join(' ')}"
+              # pseudo element
+              return if /:[a-z-]+$/.exec(it)
+                "#scope-rule :not(#scope-test) #it," +
+                "#scope-rule > #h1#h2 #{t.join(' ')}"
+              else
+                "#scope-rule :not(#scope-test) #it," +
+                "#scope-rule > #h1:not(#scope-test)#h2 #{t.join(' ')}"
             .join(',')
         ret += """#sel{#{rule.style.cssText}}"""
         # turns out that we don't have to iterate all styles - cssText just works for that

@@ -211,7 +211,9 @@
         ref$ = /^[a-zA-Z]/.exec(h)
           ? [h, '']
           : ['', h], h1 = ref$[0], h2 = ref$[1];
-        return (scopeRule + " :not(" + scopeTest + ") " + it + ",") + (scopeRule + " > " + h1 + ":not(" + scopeTest + ")" + h2 + " " + t.join(' '));
+        return /:[a-z-]+$/.exec(it)
+          ? (scopeRule + " :not(" + scopeTest + ") " + it + ",") + (scopeRule + " > " + h1 + h2 + " " + t.join(' '))
+          : (scopeRule + " :not(" + scopeTest + ") " + it + ",") + (scopeRule + " > " + h1 + ":not(" + scopeTest + ")" + h2 + " " + t.join(' '));
       }
       function fn5$(it){
         return it.trim();
