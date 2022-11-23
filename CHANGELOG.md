@@ -4,6 +4,7 @@
 
  - restructure code for node / browser and bundler
  - upgrade and audit fix modules
+ - support local file system relative path fetching
 
 
 ## v4.0.8

@@ -3,6 +3,17 @@ isScope = function(it){
   return /^:scope[ .:\[#]|^:scope$/.exec(it);
 };
 _fetch = function(u, c){
+  if ((typeof fs != 'undefined' && fs !== null) && !/^https:/.exec(u)) {
+    return new Promise(function(res, rej){
+      return fs.readFile(u, function(e, b){
+        if (e) {
+          return rej(e);
+        } else {
+          return res(b.toString());
+        }
+      });
+    });
+  }
   return fetch(u, c).then(function(ret){
     var ref$;
     if (ret && ret.ok) {

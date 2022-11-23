@@ -2,6 +2,9 @@ var win, doc
 
 is-scope = -> /^:scope[ .:\[#]|^:scope$/.exec it
 _fetch = (u, c) ->
+  if fs? and !/^https:/.exec(u) =>
+    return new Promise (res, rej) ->
+      fs.read-file u, (e, b) -> if e => rej e else res b.toString!
   (ret) <- fetch u, c .then _
   if ret and ret.ok => return ret.text!
   if !ret => return Promise.reject(new Error("404") <<< {name: \lderror, id: 404})
