@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.1.0 (upcoming)
+
+ - restructure code for node / browser and bundler
+
+
 ## v4.0.8
 
  - fix bug: appending `:not` makes psuedo elements fail to work. 

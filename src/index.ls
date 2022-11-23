@@ -1,6 +1,4 @@
 var win, doc
-fetch = if window? => window.fetch else if module? and require? => require "node-fetch" else null
-semver = if window? => window.semver else if modeul? and require? => require "@plotdb/semver" else null
 
 is-scope = -> /^:scope[ .:\[#]|^:scope$/.exec it
 _fetch = (u, c) ->
@@ -212,16 +210,6 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
       .map ~> @cache it
       .filter -> it.scope
 
-  bundle: (libs, scope-test) ->
-    libs = if Array.isArray(libs) => libs else [libs]
-    hash = {}
-    libs
-      .map (o) ~> @cache o
-      .filter -> it and it.id
-      .map -> hash[it.id] = it
-    libs = [v for k,v of hash]
-    @load libs, scope-test, true .then (libs) -> libs.map(->it.code).join(\\n)
-
   load: (libs, scope-test, bundle) ->
     libs = (if Array.isArray(libs) => libs else [libs]).map (o) ~> @cache o
     code = []
@@ -254,5 +242,3 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
         @get libs
 
 csp.env if self? => self else globalThis
-if module? => module.exports = csp
-else if window? => window.csscope = csp

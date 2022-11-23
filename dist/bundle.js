@@ -388,7 +388,31 @@ function in$(x, xs){
   var i = -1, l = xs.length >>> 0;
   while (++i < l) if (x === xs[i]) return true;
   return false;
-}if (typeof module != 'undefined' && module !== null) {
+}csp.manager.prototype.bundle = function(libs, scopeTest){
+  var hash, res$, k, v, this$ = this;
+  libs = Array.isArray(libs)
+    ? libs
+    : [libs];
+  hash = {};
+  libs.map(function(o){
+    return this$.cache(o);
+  }).filter(function(it){
+    return it && it.id;
+  }).map(function(it){
+    return hash[it.id] = it;
+  });
+  res$ = [];
+  for (k in hash) {
+    v = hash[k];
+    res$.push(v);
+  }
+  libs = res$;
+  return this.load(libs, scopeTest, true).then(function(libs){
+    return libs.map(function(it){
+      return it.code;
+    }).join('\n');
+  });
+};if (typeof module != 'undefined' && module !== null) {
   module.exports = csp;
 } else if (typeof window != 'undefined' && window !== null) {
   window.csscope = csp;

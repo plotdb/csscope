@@ -3,13 +3,28 @@
 echo "prepare..."
 rm -rf dist
 mkdir -p dist
+rm -rf .built
+mkdir -p .built
 
-echo "building index.ls -> index.js ..."
-./node_modules/.bin/lsc -cp --no-header src/index.ls > dist/index.js
-echo "minify index.js -> index.min.js ..."
-./node_modules/.bin/uglifyjs dist/index.js -m -c > dist/index.min.js
+echo "build src -> .built .."
+./node_modules/.bin/lsc -cb --no-header -o .built src
+
+cat .built/head.js > dist/node.js
+cat .built/index.js >> dist/node.js
+cat .built/bundle.js >> dist/node.js
+cat .built/foot.js >> dist/node.js
+
+cat .built/index.js >> dist/index.js
+cat .built/foot.js >> dist/index.js
+
+cat .built/index.js >> dist/bundle.js
+cat .built/bundle.js >> dist/bundle.js
+cat .built/foot.js >> dist/bundle.js
 
 echo "copy dist to web ..."
 rm -rf web/static/assets/lib/@plotdb/csscope/dev/
 mkdir -p web/static/assets/lib/@plotdb/csscope/dev/
 cp -R dist/* web/static/assets/lib/@plotdb/csscope/dev/
+
+rm -rf .built
+echo "done."
