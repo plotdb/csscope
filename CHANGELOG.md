@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.1.1
+
+ - add missing `ns` in cache / id parser
+
+
 ## v4.1.0
 
  - restructure code for node / browser and bundler

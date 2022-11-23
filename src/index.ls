@@ -42,10 +42,12 @@ csp.cache = (o) ->
   if !o.id => o.id = csp.id o
   if @_cache[o.id] => return that
   if o.id and !o.name =>
-    ret = /^(\S+)@(\S+):(\S+)$/.exec(o.id)
-    if !ret => [n,v,p] = [o.id, '', '']
-    else [n,v,p] = [ret.1, ret.2, ret.3]
-  else [n,v,p] = [o.name, o.version or '', o.path or '']
+    k = o.id.split(':')
+    if k.length <= 2 => [nv,p,s] = k else [s,nv,p] = k
+    if !(ret = /^(@?[^@]+)(?:@([^:]+))?$/.exec(nv)) => ret = ['',o.id,'']
+    n = ret.1
+    v = ret.2
+  else [s,n,v,p] = [o.ns, o.name, o.version or '', o.path or '']
   if /^[0-9.]+$/.exec v =>
     if @_ver.map{}[n][v] => v = that
     if @_cache[csp.id({name: n, version: v, path: p})] => return that
@@ -53,7 +55,7 @@ csp.cache = (o) ->
       ver = @_ver.list[n][i]
       if !semver.fit(ver, v) => continue
       @_ver.map[n][v] = ver
-      o.id = csp.id {name: n, version: ver, path: p}
+      o.id = csp.id {ns: s, name: n, version: ver, path: p}
       if @_cache[o.id] => return that
   if !(v in @_ver.list[][n]) => @_ver.list[n].push v
   return @_cache[o.id] = o
