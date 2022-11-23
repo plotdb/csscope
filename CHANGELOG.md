@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.1.2
+
+ - scope script properly 
+
+
 ## v4.1.1
 
  - add missing `ns` in cache / id parser

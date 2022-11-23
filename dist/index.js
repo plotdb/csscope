@@ -1,3 +1,4 @@
+(function(){
 var win, doc, isScope, _fetch, csp, slice$ = [].slice;
 isScope = function(it){
   return /^:scope[ .:\[#]|^:scope$/.exec(it);
@@ -409,4 +410,4 @@ function in$(x, xs){
   module.exports = csp;
 } else if (typeof window != 'undefined' && window !== null) {
   window.csscope = csp;
-}
+}}())
