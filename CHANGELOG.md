@@ -3,6 +3,7 @@
 ## v4.1.0 (upcoming)
 
  - restructure code for node / browser and bundler
+ - upgrade and audit fix modules
 
 
 ## v4.0.8
