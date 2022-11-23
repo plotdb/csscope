@@ -21,6 +21,11 @@ cat .built/index.js >> dist/bundle.js
 cat .built/bundle.js >> dist/bundle.js
 cat .built/foot.js >> dist/bundle.js
 
+echo "minify dist/index.js -> index.min.js ..."
+./node_modules/.bin/uglifyjs dist/index.js -m -c > dist/index.min.js
+echo "minify dist/bundle.js -> bundle.min.js ..."
+./node_modules/.bin/uglifyjs dist/bundle.js -m -c > dist/bundle.min.js
+
 echo "copy dist to web ..."
 rm -rf web/static/assets/lib/@plotdb/csscope/dev/
 mkdir -p web/static/assets/lib/@plotdb/csscope/dev/
