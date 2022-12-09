@@ -1,8 +1,9 @@
 # Change Logs
 
-## v4.1.3 (upcoming)
+## v4.1.3
 
  - fix bug: `id()` should generate path depending on the type in bid.
+ - audit fix to upgrade dependencies fo vulnerabilities fixing
 
 
 ## v4.1.2
