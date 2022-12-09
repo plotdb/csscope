@@ -1,5 +1,10 @@
 # Change Logs
 
+## v4.1.3 (upcoming)
+
+ - fix bug: `id()` should generate path depending on the type in bid.
+
+
 ## v4.1.2
 
  - scope script properly 
