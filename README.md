@@ -71,10 +71,10 @@ where `options` is an object with following posisble fields:
    - a function accepting `{name, version, path}` parameters. return an URL for specific module
    - an object, with following fields:
      - `url({name, version, path})`: return an URL for specified item.
-     - `fetch({name, version, path})`: return `{version, content}` for specified item.
+     - `fetch({name, version, path})`: optional, return `{version, content}` for specified item.
        - `version`: exact version of the returned content
        - `content`: content of the requested resource
-   - for more information, check `@plotdb/registry` module.
+   - for more information, check `@plotdb/block` and `@plotdb/registry` module.
 
 
 ## Pre bundling (WIP)

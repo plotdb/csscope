@@ -299,14 +299,18 @@ csp.manager.prototype = import$(Object.create(Object.prototype), {
     return this._cache[o.id] = csp.cache(o);
   },
   _ref: function(o){
-    var that;
-    return typeof o === 'string'
-      ? o
-      : (that = o.url)
-        ? that
-        : this._reg.fetch
-          ? this._reg.fetch(o)
-          : this._reg(o);
+    var r;
+    if (typeof o === 'string') {
+      o = {
+        url: o
+      };
+    }
+    if (typeof (r = this._reg.url || this._reg) === 'function') {
+      o.url = r(o);
+    }
+    return this._reg.fetch
+      ? this._reg.fetch(o)
+      : o.url;
   },
   registry: function(v){
     if (typeof v === 'string') {
