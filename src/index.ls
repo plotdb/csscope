@@ -2,7 +2,7 @@ var win, doc
 
 is-scope = -> /^:scope[ .:\[#]|^:scope$/.exec it
 _fetch = (u, c) ->
-  if fs? and !/^https:/.exec(u) =>
+  if csp.__node and fs? and !/^https:/.exec(u) =>
     return new Promise (res, rej) ->
       fs.read-file u, (e, b) -> if e => rej e else res b.toString!
   (ret) <- fetch u, c .then _

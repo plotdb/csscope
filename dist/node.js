@@ -10,7 +10,7 @@ isScope = function(it){
   return /^:scope[ .:\[#]|^:scope$/.exec(it);
 };
 _fetch = function(u, c){
-  if ((typeof fs != 'undefined' && fs !== null) && !/^https:/.exec(u)) {
+  if (csp.__node && (typeof fs != 'undefined' && fs !== null) && !/^https:/.exec(u)) {
     return new Promise(function(res, rej){
       return fs.readFile(u, function(e, b){
         if (e) {
@@ -444,7 +444,8 @@ function in$(x, xs){
       return it.code;
     }).join('\n');
   });
-};if (typeof module != 'undefined' && module !== null) {
+};csp.__node = true;
+if (typeof module != 'undefined' && module !== null) {
   module.exports = csp;
 } else if (typeof window != 'undefined' && window !== null) {
   window.csscope = csp;
