@@ -1,5 +1,10 @@
 # Change Logs
 
+## v5.0.3
+
+ - fix bug: bundler incorrect ignores `http` protocol
+
+
 ## v5.0.2
 
  - fix bug: will try using `fs` once defined even in browser.
