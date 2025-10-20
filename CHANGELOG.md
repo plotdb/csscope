@@ -1,5 +1,10 @@
 # Change Logs
 
+## v5.0.4
+
+ - fix bug: order of applying CSS files is unstable
+
+
 ## v5.0.3
 
  - fix bug: bundler incorrect ignores `http` protocol

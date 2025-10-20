@@ -365,14 +365,14 @@ csp.manager.prototype = import$(Object.create(Object.prototype), {
       return this$.cache(o);
     });
     code = [];
-    return Promise.all(libs.map(function(o){
+    return Promise.all(libs.map(function(o, idx){
       var ref, p;
       if (o.inited) {
         return Promise.resolve();
       }
       if (o.scope && o.code) {
         o.inited = true;
-        code.push(o.code);
+        code.push([o.code, idx]);
         return Promise.resolve();
       }
       ref = this$._ref(o);
@@ -398,13 +398,25 @@ csp.manager.prototype = import$(Object.create(Object.prototype), {
           name: o.scope,
           scopeTest: scopeTest
         });
-        return code.push(o.code);
+        return code.push([o.code, idx]);
       });
     })).then(function(){
+      var _code;
       if (bundle) {
         return libs;
       }
-      this$.styleContent.push.apply(this$.styleContent, code);
+      _code = code.sort(function(a, b){
+        if (a[1] > b[1]) {
+          return 1;
+        } else if (a[1] < b[1]) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }).map(function(it){
+        return it[0];
+      });
+      this$.styleContent.push.apply(this$.styleContent, _code);
       this$.styleNode.textContent = this$.styleContent.join('\n');
       return this$.get(libs);
     });

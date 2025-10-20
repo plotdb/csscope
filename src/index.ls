@@ -222,12 +222,12 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
     code = []
     Promise
       .all(
-        libs.map (o) ~>
+        libs.map (o, idx) ~>
           if o.inited => return Promise.resolve!
           # predefined libs with code + scope, but not inited. code must be scoped.
           if o.scope and o.code =>
             o.inited = true
-            code.push o.code
+            code.push [o.code, idx]
             return Promise.resolve!
 
           ref = @_ref o
@@ -240,11 +240,15 @@ csp.manager.prototype = Object.create(Object.prototype) <<< do
               inited: true
               scope: csp.scope o
               code: @converter.convert {css: content, name: o.scope, scope-test}
-            code.push o.code
+            code.push [o.code, idx]
       )
       .then ~>
         if bundle => return libs
-        @style-content.push.apply @style-content, code
+        _code = code
+          .sort (a,b) -> if a.1 > b.1 => 1 else if a.1 < b.1 => -1 else 0
+          .map -> it.0
+
+        @style-content.push.apply @style-content, _code
         @style-node.textContent = @style-content.join(\\n)
         @get libs
 
