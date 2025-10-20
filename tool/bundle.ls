@@ -1,3 +1,5 @@
+# since we do have bundle function in released files and it can be run along with jsdom directly in nodejs environment, not sure if this bundle.ls is still relevant. anyway, it dependsn on puppeteer-core which may need additioanl installation time but if this isn't used frequently even in dev, we removed puppeteer-core from devDependencies first.
+# install it manually if we need to run this tool again.
 require! <[fs ../dist/csscope.min.js puppeteer-core]>
 
 css = fs.read-file-sync "../web/static/css/dev/index.css" .toString!
