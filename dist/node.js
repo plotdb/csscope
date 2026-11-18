@@ -132,17 +132,47 @@ csp.cache = function(o){
   return this._cache[o.id] = o;
 };
 csp.converter = function(opt){
-  var ifr;
+  var ifr, idoc, e;
   opt == null && (opt = {});
   this.scopeTest = opt.scopeTest;
   this.node = doc.createElement("style");
-  this.iframe = ifr = doc.createElement("iframe");
+  this._idx = 0;
+  ifr = doc.createElement("iframe");
   ifr.setAttribute('title', "for csscope parsing");
   ifr.style.display = 'none';
   ifr.src = 'about:blank';
-  doc.body.appendChild(ifr);
-  this.iframe.contentDocument.body.appendChild(this.node);
-  this._idx = 0;
+  if (doc.body) {
+    doc.body.appendChild(ifr);
+  }
+  if ((idoc = (function(){
+    try {
+      return ifr.contentDocument;
+    } catch (e$) {
+      e = e$;
+      return null;
+    }
+  }())) && idoc.body) {
+    this.iframe = ifr;
+    idoc.body.appendChild(this.node);
+    return this;
+  }
+  if (ifr.parentNode) {
+    ifr.parentNode.removeChild(ifr);
+  }
+  if (typeof CSSStyleSheet === 'function' && CSSStyleSheet.prototype.replaceSync) {
+    this.sheet = (function(){
+      try {
+        return new CSSStyleSheet();
+      } catch (e$) {
+        e = e$;
+        return null;
+      }
+    }());
+  }
+  if (!this.sheet) {
+    this.node.setAttribute('media', 'not all');
+    (doc.head || doc.documentElement).appendChild(this.node);
+  }
   return this;
 };
 csp.converter.prototype = import$(Object.create(Object.prototype), {
@@ -267,7 +297,9 @@ csp.converter.prototype = import$(Object.create(Object.prototype), {
     }
     rules = typeof css === 'object'
       ? css
-      : (this.node.textContent = (css || '') + ("/*" + (this._idx++) + "*/"), this.node.sheet.cssRules);
+      : this.sheet
+        ? (this.sheet.replaceSync(css || ''), this.sheet.cssRules)
+        : (this.node.textContent = (css || '') + ("/*" + (this._idx++) + "*/"), this.node.sheet.cssRules);
     defs = this.getNames(rules, {});
     return this._convert(rules, rule, name, scopeTest, defs) || '';
   }

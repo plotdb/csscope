@@ -61,16 +61,29 @@ csp.cache = (o) ->
   if !(v in @_ver.list[][n]) => @_ver.list[n].push v
   return @_cache[o.id] = o
 
+# css is parsed in a blank iframe so it never applies to this page. inside a sandboxed frame without
+# `allow-same-origin` that iframe gets an origin of its own and `contentDocument` is null: parse with a
+# constructable stylesheet instead ( not attached to any document ), or, where there is none, with a
+# style element whose media never matches.
 csp.converter = (opt={}) ->
   @scope-test = opt.scope-test
   @node = doc.createElement("style")
-  @iframe = ifr = doc.createElement("iframe")
+  @_idx = 0 # use for comment refreshing
+  ifr = doc.createElement("iframe")
   ifr.setAttribute \title, "for csscope parsing"
   ifr.style <<< display: \none
   ifr.src = \about:blank
-  doc.body.appendChild ifr
-  @iframe.contentDocument.body.appendChild @node
-  @_idx = 0 # use for comment refreshing
+  if doc.body => doc.body.appendChild ifr
+  if (idoc = try ifr.contentDocument catch e => null) and idoc.body =>
+    @iframe = ifr
+    idoc.body.appendChild @node
+    return @
+  if ifr.parentNode => ifr.parentNode.removeChild ifr
+  if typeof(CSSStyleSheet) == \function and CSSStyleSheet.prototype.replaceSync =>
+    @sheet = try new CSSStyleSheet! catch e => null
+  if !@sheet =>
+    @node.setAttribute \media, 'not all'
+    (doc.head or doc.documentElement).appendChild @node
   @
 
 csp.converter.prototype = Object.create(Object.prototype) <<< do
@@ -161,6 +174,11 @@ csp.converter.prototype = Object.create(Object.prototype) <<< do
     if !name => name = rule
     if !scope-test => scope-test = @scope-test
     rules = if typeof(css) == \object => css
+    # a constructable sheet re-parses on every replaceSync, so no comment trick is needed.
+    # NOTE @import rules are dropped by replaceSync ( they aren't allowed in constructable sheets ).
+    else if @sheet =>
+      @sheet.replaceSync(css or '')
+      @sheet.cssRules
     else
       # if css == textContent, rules won't be updated and will be the patched rules
       # but we need a raw, plain rules, so we simply add a different comment to force update

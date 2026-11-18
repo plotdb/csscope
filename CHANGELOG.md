@@ -1,5 +1,15 @@
 # Change Logs
 
+## v5.0.5
+
+ - work inside a sandboxed iframe without `allow-same-origin`. the converter parsed css in a blank
+   iframe and read `iframe.contentDocument.body`, which is null there ( the child frame gets an
+   origin of its own ), so `new csscope.manager()` threw. it now falls back to a constructable
+   stylesheet ( `new CSSStyleSheet` + `replaceSync`, attached to nothing ), and to a
+   `<style media="not all">` where that isn't available. the iframe is still used whenever it works,
+   so nothing changes elsewhere. note that `replaceSync` drops `@import` rules.
+
+
 ## v5.0.4
 
  - fix bug: order of applying CSS files is unstable
